@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/contexts/NotificationContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -21,6 +22,7 @@ interface NegotiationWithDetails extends Negotiation {
 const Negotiations = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
+  const { unreadByChat, markChatAsSeen } = useNotifications();
   const [negotiations, setNegotiations] = useState<NegotiationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
@@ -159,6 +161,7 @@ const Negotiations = () => {
     setActiveChatId(neg.id);
     setActiveChatTitle(neg.itemTitle);
     setActiveChatUser(neg.otherUserName);
+    markChatAsSeen(neg.id);
   };
 
   const formatDate = (dateStr: string) => {
@@ -253,6 +256,11 @@ const Negotiations = () => {
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
+                      {(unreadByChat[neg.id] || 0) > 0 && (
+                        <span className="min-w-[20px] h-[20px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold leading-none px-1 shadow-sm animate-in zoom-in-50 duration-200">
+                          {unreadByChat[neg.id] > 99 ? "99+" : unreadByChat[neg.id]}
+                        </span>
+                      )}
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDate(neg.updated_at)}
