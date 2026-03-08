@@ -32,7 +32,7 @@ interface MeetupProposalProps {
   itemType: 'item' | 'request';
 }
 
-const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProps) => {
+const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestId, itemType }: MeetupProposalProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [proposal, setProposal] = useState<MeetupProposalType | null>(null);
