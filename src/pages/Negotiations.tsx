@@ -290,6 +290,7 @@ const Negotiations = () => {
         negotiationId={activeChatId}
         itemTitle={activeChatTitle}
         otherUserName={activeChatUser}
+        otherUserAvatar={activeChatAvatar}
       />
     </div>
   );
