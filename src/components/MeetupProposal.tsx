@@ -82,12 +82,13 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
     // Also send browser notification if permitted
     if ("Notification" in window && Notification.permission === "granted") {
       try {
-        new Notification(title, {
+        const options: NotificationOptions & { renotify?: boolean } = {
           body,
           icon: "/favicon.ico",
           tag: `meetup-${negotiationId}`,
           renotify: true,
-        });
+        };
+        new Notification(title, options as NotificationOptions);
       } catch {
         // Fallback: notification API may not work in all contexts
       }
