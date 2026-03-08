@@ -15,6 +15,7 @@ import type { Negotiation, NegotiationMessage } from "@/lib/types";
 interface NegotiationWithDetails extends Negotiation {
   itemTitle: string;
   otherUserName: string;
+  otherUserAvatar?: string;
   lastMessage?: string;
   messageCount: number;
 }
@@ -28,6 +29,7 @@ const Negotiations = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeChatTitle, setActiveChatTitle] = useState("");
   const [activeChatUser, setActiveChatUser] = useState("");
+  const [activeChatAvatar, setActiveChatAvatar] = useState("");
   const activeChatIdRef = useRef<string | null>(null);
 
   // Keep ref in sync so realtime callback sees latest value
@@ -120,8 +122,9 @@ const Negotiations = () => {
 
           // Get other user's name
           const otherId = neg.buyer_id === user.id ? neg.seller_id : neg.buyer_id;
-          const { data: otherProfile } = await (supabase as any).from("profiles").select("full_name").eq("id", otherId).single();
+          const { data: otherProfile } = await (supabase as any).from("profiles").select("full_name, avatar_url").eq("id", otherId).single();
           const otherUserName = otherProfile?.full_name || "Unknown";
+          const otherUserAvatar = otherProfile?.avatar_url || "";
 
           // Get message count and last message
           const { data: msgs } = await (supabase as any)
@@ -135,6 +138,7 @@ const Negotiations = () => {
             ...neg,
             itemTitle,
             otherUserName,
+            otherUserAvatar,
             lastMessage: msgs?.[0]?.message,
             messageCount: 0, // We'll get count separately
           };
@@ -161,6 +165,7 @@ const Negotiations = () => {
     setActiveChatId(neg.id);
     setActiveChatTitle(neg.itemTitle);
     setActiveChatUser(neg.otherUserName);
+    setActiveChatAvatar(neg.otherUserAvatar || "");
     markChatAsSeen(neg.id);
   };
 
@@ -285,6 +290,7 @@ const Negotiations = () => {
         negotiationId={activeChatId}
         itemTitle={activeChatTitle}
         otherUserName={activeChatUser}
+        otherUserAvatar={activeChatAvatar}
       />
     </div>
   );

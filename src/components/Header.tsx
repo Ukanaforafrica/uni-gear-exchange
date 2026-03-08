@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, X, LogOut, User, MessageCircle, Bell } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -64,7 +65,14 @@ const Header = () => {
                 )}
                 <Button variant="ghost" size="sm" className="gap-2" asChild>
                   <Link to="/profile">
-                    <User className="w-4 h-4" />
+                    <Avatar className="w-6 h-6">
+                      {profile?.avatar_url ? (
+                        <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                      ) : null}
+                      <AvatarFallback className="text-[10px] bg-primary text-primary-foreground">
+                        {(profile?.full_name || "U").slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
                     {profile?.full_name || "Profile"}
                   </Link>
                 </Button>
@@ -122,7 +130,14 @@ const Header = () => {
                 {user ? (
                   <>
                     <Link to="/profile" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
-                      <User className="w-4 h-4" />
+                      <Avatar className="w-6 h-6">
+                        {profile?.avatar_url ? (
+                          <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                        ) : null}
+                        <AvatarFallback className="text-[10px] bg-primary text-primary-foreground">
+                          {(profile?.full_name || "U").slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                       {profile?.full_name || "Profile"} • {profile?.university}
                     </Link>
                     <Button variant="outline" onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="w-full">
