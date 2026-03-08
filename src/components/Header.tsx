@@ -8,7 +8,7 @@ import { useNotifications } from "@/contexts/NotificationContext";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
-  const { unreadCount, clearUnread } = useNotifications();
+  const { unreadCount, markAsSeen } = useNotifications();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
