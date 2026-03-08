@@ -52,6 +52,11 @@ const Profile = () => {
   const [deals, setDeals] = useState<(Negotiation & { itemTitle: string; otherName: string })[]>([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
 
+  // Reviews
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [avgRating, setAvgRating] = useState(0);
+  const [loadingDeals, setLoadingDeals] = useState(true);
+
   // Notifications
   const [pushEnabled, setPushEnabled] = useState(false);
   const [emailEnabled, setEmailEnabled] = useState(true);
