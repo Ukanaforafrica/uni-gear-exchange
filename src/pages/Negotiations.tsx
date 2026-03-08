@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Clock, ArrowRight, ShoppingBag, Search } from "lucide-react";
 import NegotiationChat from "@/components/NegotiationChat";
-import type { Negotiation, Profile } from "@/lib/types";
+import type { Negotiation, NegotiationMessage } from "@/lib/types";
 
 interface NegotiationWithDetails extends Negotiation {
   itemTitle: string;
