@@ -33,7 +33,7 @@ const Header = () => {
             {user ? (
               <>
                 <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
-                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={clearUnread}>
+                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={markAsSeen}>
                   <MessageCircle className="w-4 h-4" />Negotiations
                 </Link>
                 <Link to="/negotiations" className="relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all" onClick={clearUnread} aria-label="Notifications">
