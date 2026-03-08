@@ -134,9 +134,9 @@ const FeaturedItems = () => {
                   <span className="font-display text-2xl font-bold text-primary">
                     {item.price}
                   </span>
-                  <Button size="sm" className="gap-2">
+                  <Button size="sm" className="gap-2" onClick={handleNegotiate}>
                     <MessageCircle className="w-4 h-4" />
-                    Negotiate
+                    {user ? "Negotiate" : "Sign Up to Negotiate"}
                   </Button>
                 </div>
               </div>

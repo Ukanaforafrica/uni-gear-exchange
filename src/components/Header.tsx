@@ -79,11 +79,19 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-border animate-fade-in">
             <nav className="flex flex-col gap-4">
-              <Link to="/" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Home</Link>
-              <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
-              <Link to="/request" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Request Item</Link>
-              <Link to="/sell" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Sell Item</Link>
-              {user && <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}><MessageCircle className="w-4 h-4" />Negotiations</Link>}
+              {user ? (
+                <>
+                  <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}><MessageCircle className="w-4 h-4" />Negotiations</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Home</Link>
+                  <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
+                  <Link to="/request" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Request Item</Link>
+                  <Link to="/sell" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Sell Item</Link>
+                </>
+              )}
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
                 {user ? (
                   <>
