@@ -121,8 +121,9 @@ const Negotiations = () => {
 
           // Get other user's name
           const otherId = neg.buyer_id === user.id ? neg.seller_id : neg.buyer_id;
-          const { data: otherProfile } = await (supabase as any).from("profiles").select("full_name").eq("id", otherId).single();
+          const { data: otherProfile } = await (supabase as any).from("profiles").select("full_name, avatar_url").eq("id", otherId).single();
           const otherUserName = otherProfile?.full_name || "Unknown";
+          const otherUserAvatar = otherProfile?.avatar_url || "";
 
           // Get message count and last message
           const { data: msgs } = await (supabase as any)
