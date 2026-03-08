@@ -15,6 +15,7 @@ import type { Negotiation, NegotiationMessage } from "@/lib/types";
 interface NegotiationWithDetails extends Negotiation {
   itemTitle: string;
   otherUserName: string;
+  otherUserAvatar?: string;
   lastMessage?: string;
   messageCount: number;
 }
