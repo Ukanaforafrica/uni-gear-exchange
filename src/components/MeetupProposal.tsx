@@ -265,8 +265,8 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
 
       {/* Accepted meetup banner */}
       {proposal?.status === "accepted" && !showCloseDeal && (
-        <div className="mx-4 mb-2 rounded-xl border border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-900 p-3 space-y-2">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-green-700 dark:text-green-400">
+        <div className="mx-4 mb-2 rounded-xl border border-primary/20 bg-primary/5 p-3 space-y-2">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-primary">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Meetup Confirmed!
           </div>
