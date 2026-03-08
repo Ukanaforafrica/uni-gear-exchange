@@ -43,7 +43,8 @@ const Profile = () => {
 
   // Notifications
   const [pushEnabled, setPushEnabled] = useState(false);
-
+  const [emailEnabled, setEmailEnabled] = useState(true);
+  const [savingEmail, setSavingEmail] = useState(false);
   useEffect(() => {
     if (profile) {
       setFullName(profile.full_name);
