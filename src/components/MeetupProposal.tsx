@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import ReviewPrompt from "@/components/ReviewPrompt";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
