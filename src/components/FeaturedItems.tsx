@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Clock, MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const featuredItems = [
   {
@@ -60,6 +62,17 @@ const featuredItems = [
 ];
 
 const FeaturedItems = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNegotiate = () => {
+    if (!user) {
+      navigate("/signup");
+    } else {
+      navigate("/marketplace");
+    }
+  };
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
@@ -121,9 +134,9 @@ const FeaturedItems = () => {
                   <span className="font-display text-2xl font-bold text-primary">
                     {item.price}
                   </span>
-                  <Button size="sm" className="gap-2">
+                  <Button size="sm" className="gap-2" onClick={handleNegotiate}>
                     <MessageCircle className="w-4 h-4" />
-                    Negotiate
+                    {user ? "Negotiate" : "Sign Up to Negotiate"}
                   </Button>
                 </div>
               </div>
