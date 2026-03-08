@@ -1,4 +1,5 @@
-import { ShoppingBag, Instagram, Twitter, Mail } from "lucide-react";
+import { Instagram, Twitter, Mail } from "lucide-react";
+import logoImg from "@/assets/logo.png";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
