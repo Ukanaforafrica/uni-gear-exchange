@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import RequestItem from "./pages/RequestItem";
 import ListItem from "./pages/ListItem";
 import Marketplace from "./pages/Marketplace";
+import Negotiations from "./pages/Negotiations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
