@@ -129,7 +129,7 @@ const Marketplace = () => {
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {items.map((item) => (
-                    <div key={item.id} className={`bg-card rounded-2xl shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden ${item.status === "sold" ? "opacity-75" : ""}`}>
+                    <div key={item.id} className="bg-card rounded-2xl shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
                       <div className="aspect-[4/3] bg-muted relative">
                         {item.photos.length > 0 ? (
                           <img src={item.photos[0]} alt={item.title} className="w-full h-full object-cover" />
@@ -138,23 +138,16 @@ const Marketplace = () => {
                             <Camera className="w-8 h-8" />
                           </div>
                         )}
-                        {item.status === "sold" && (
-                          <div className="absolute inset-0 bg-foreground/40 flex items-center justify-center">
-                            <Badge className="bg-destructive text-destructive-foreground text-sm px-4 py-1.5 font-bold shadow-lg">SOLD</Badge>
-                          </div>
-                        )}
                         <div className="absolute top-2 left-2 flex gap-1.5">
                           <Badge variant="secondary" className="text-xs">{item.category}</Badge>
                           <Badge className="text-xs bg-background/80 text-foreground backdrop-blur-sm">{item.condition}</Badge>
                         </div>
-                        {item.status !== "sold" && (
-                          <div className="absolute top-2 right-2">
-                            <Badge variant="outline" className="text-xs bg-background/80 backdrop-blur-sm border-none flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {daysLeft(item.expires_at)}d left
-                            </Badge>
-                          </div>
-                        )}
+                        <div className="absolute top-2 right-2">
+                          <Badge variant="outline" className="text-xs bg-background/80 backdrop-blur-sm border-none flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {daysLeft(item.expires_at)}d left
+                          </Badge>
+                        </div>
                       </div>
                       <div className="p-4">
                         <h3 className="font-display font-bold text-foreground text-lg mb-1 line-clamp-1">{item.title}</h3>
@@ -168,29 +161,23 @@ const Marketplace = () => {
                         {item.usage_duration && (
                           <p className="text-xs text-muted-foreground mt-1">Used: {item.usage_duration}</p>
                         )}
-                        {item.status === "sold" ? (
-                          <Button variant="outline" size="sm" className="w-full mt-3 gap-1.5" disabled>
-                            Sold
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full mt-3 gap-1.5"
-                            disabled={!user || item.user_id === user?.id}
-                            onClick={() =>
-                              startNegotiation({
-                                itemId: item.id,
-                                itemType: "item",
-                                sellerId: item.user_id,
-                                itemTitle: item.title,
-                              })
-                            }
-                          >
-                            <MessageCircle className="w-3.5 h-3.5" />
-                            {!user ? "Sign in to Negotiate" : item.user_id === user.id ? "Your Listing" : "Negotiate"}
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full mt-3 gap-1.5"
+                          disabled={!user || item.user_id === user?.id}
+                          onClick={() =>
+                            startNegotiation({
+                              itemId: item.id,
+                              itemType: "item",
+                              sellerId: item.user_id,
+                              itemTitle: item.title,
+                            })
+                          }
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          {!user ? "Sign in to Negotiate" : item.user_id === user.id ? "Your Listing" : "Negotiate"}
+                        </Button>
                       </div>
                     </div>
                   ))}
