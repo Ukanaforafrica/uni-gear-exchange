@@ -130,7 +130,14 @@ const Header = () => {
                 {user ? (
                   <>
                     <Link to="/profile" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
-                      <User className="w-4 h-4" />
+                      <Avatar className="w-6 h-6">
+                        {profile?.avatar_url ? (
+                          <AvatarImage src={profile.avatar_url} alt={profile.full_name} />
+                        ) : null}
+                        <AvatarFallback className="text-[10px] bg-primary text-primary-foreground">
+                          {(profile?.full_name || "U").slice(0, 2).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
                       {profile?.full_name || "Profile"} • {profile?.university}
                     </Link>
                     <Button variant="outline" onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="w-full">
