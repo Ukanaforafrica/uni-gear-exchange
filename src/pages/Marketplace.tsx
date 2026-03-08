@@ -220,24 +220,23 @@ const Marketplace = () => {
                           ₦{req.budget_min.toLocaleString()} — ₦{req.budget_max.toLocaleString()}
                         </div>
                       )}
-                      {user && req.user_id !== user.id && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full mt-3 gap-1.5"
-                          onClick={() =>
-                            startNegotiation({
-                              itemRequestId: req.id,
-                              itemType: "request",
-                              sellerId: req.user_id,
-                              itemTitle: req.title,
-                            })
-                          }
-                        >
-                          <MessageCircle className="w-3.5 h-3.5" />
-                          I Have This
-                        </Button>
-                      )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full mt-3 gap-1.5"
+                        disabled={!user || req.user_id === user?.id}
+                        onClick={() =>
+                          startNegotiation({
+                            itemRequestId: req.id,
+                            itemType: "request",
+                            sellerId: req.user_id,
+                            itemTitle: req.title,
+                          })
+                        }
+                      >
+                        <MessageCircle className="w-3.5 h-3.5" />
+                        {!user ? "Sign in to Respond" : req.user_id === user.id ? "Your Request" : "I Have This"}
+                      </Button>
                     </div>
                   ))}
                 </div>
