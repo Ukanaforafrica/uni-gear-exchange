@@ -29,6 +29,7 @@ const Negotiations = () => {
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeChatTitle, setActiveChatTitle] = useState("");
   const [activeChatUser, setActiveChatUser] = useState("");
+  const [activeChatAvatar, setActiveChatAvatar] = useState("");
   const activeChatIdRef = useRef<string | null>(null);
 
   // Keep ref in sync so realtime callback sees latest value
