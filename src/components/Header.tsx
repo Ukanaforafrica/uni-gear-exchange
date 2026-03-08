@@ -94,7 +94,20 @@ const Header = () => {
               {user ? (
                 <>
                   <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
-                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}><MessageCircle className="w-4 h-4" />Negotiations</Link>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); clearUnread(); }}>
+                    <MessageCircle className="w-4 h-4" />Negotiations
+                  </Link>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); clearUnread(); }}>
+                    <div className="relative">
+                      <Bell className="w-4 h-4" />
+                      {unreadCount > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-[16px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-none px-0.5">
+                          {unreadCount > 99 ? "99+" : unreadCount}
+                        </span>
+                      )}
+                    </div>
+                    Notifications
+                  </Link>
                 </>
               ) : (
                 <>
