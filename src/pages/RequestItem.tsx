@@ -105,13 +105,17 @@ const RequestItem = () => {
         photos: photoUrls,
       } as any);
 
-    setLoading(false);
+      setLoading(false);
 
-    if (error) {
-      toast({ title: "Failed to submit request", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Request posted!", description: "Students at your campus can now see your request." });
-      navigate("/marketplace");
+      if (error) {
+        toast({ title: "Failed to submit request", description: error.message, variant: "destructive" });
+      } else {
+        toast({ title: "Request posted!", description: "Students at your campus can now see your request." });
+        navigate("/marketplace");
+      }
+    } catch (err: any) {
+      setLoading(false);
+      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
     }
   };
 
