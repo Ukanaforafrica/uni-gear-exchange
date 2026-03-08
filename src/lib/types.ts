@@ -38,7 +38,7 @@ export const USAGE_DURATIONS = [
   '2+ years',
 ] as const;
 
-export const FREE_MESSAGE_LIMIT = 20;
+export const FREE_MESSAGE_LIMIT = 7;
 export const CHAT_UNLOCK_PRICE = 1000; // ₦1,000
 
 export interface Profile {
