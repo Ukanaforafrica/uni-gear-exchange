@@ -96,6 +96,9 @@ export interface Negotiation {
   seller_id: string;
   status: string;
   paid: boolean;
+  deal_closed: boolean;
+  closed_by: string | null;
+  closed_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -110,4 +113,17 @@ export interface NegotiationMessage {
   message_type: MessageType;
   media_url: string;
   created_at: string;
+}
+
+export interface MeetupProposal {
+  id: string;
+  negotiation_id: string;
+  proposed_by: string;
+  meetup_time: string;
+  meetup_location: string;
+  status: string;
+  buyer_accepted: boolean;
+  seller_accepted: boolean;
+  created_at: string;
+  updated_at: string;
 }

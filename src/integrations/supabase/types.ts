@@ -122,6 +122,53 @@ export type Database = {
         }
         Relationships: []
       }
+      meetup_proposals: {
+        Row: {
+          buyer_accepted: boolean
+          created_at: string
+          id: string
+          meetup_location: string
+          meetup_time: string
+          negotiation_id: string
+          proposed_by: string
+          seller_accepted: boolean
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_accepted?: boolean
+          created_at?: string
+          id?: string
+          meetup_location: string
+          meetup_time: string
+          negotiation_id: string
+          proposed_by: string
+          seller_accepted?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_accepted?: boolean
+          created_at?: string
+          id?: string
+          meetup_location?: string
+          meetup_time?: string
+          negotiation_id?: string
+          proposed_by?: string
+          seller_accepted?: boolean
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "meetup_proposals_negotiation_id_fkey"
+            columns: ["negotiation_id"]
+            isOneToOne: false
+            referencedRelation: "negotiations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       negotiation_messages: {
         Row: {
           created_at: string
@@ -163,7 +210,10 @@ export type Database = {
       negotiations: {
         Row: {
           buyer_id: string
+          closed_at: string | null
+          closed_by: string | null
           created_at: string
+          deal_closed: boolean
           id: string
           item_id: string | null
           item_request_id: string | null
@@ -175,7 +225,10 @@ export type Database = {
         }
         Insert: {
           buyer_id: string
+          closed_at?: string | null
+          closed_by?: string | null
           created_at?: string
+          deal_closed?: boolean
           id?: string
           item_id?: string | null
           item_request_id?: string | null
@@ -187,7 +240,10 @@ export type Database = {
         }
         Update: {
           buyer_id?: string
+          closed_at?: string | null
+          closed_by?: string | null
           created_at?: string
+          deal_closed?: boolean
           id?: string
           item_id?: string | null
           item_request_id?: string | null

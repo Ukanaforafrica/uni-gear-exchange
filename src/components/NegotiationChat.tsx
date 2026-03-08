@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Lock, MessageCircle, Image, Mic, Video, Square, Loader2 } from "lucide-react";
+import MeetupProposal from "@/components/MeetupProposal";
 import type { Negotiation, NegotiationMessage, MessageType } from "@/lib/types";
 import { FREE_MESSAGE_LIMIT, CHAT_UNLOCK_PRICE } from "@/lib/types";
 
@@ -240,10 +241,19 @@ const NegotiationChat = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md max-h-[85vh] flex flex-col p-0">
         <DialogHeader className="p-4 pb-2 border-b border-border">
-          <DialogTitle className="flex items-center gap-2 text-base">
-            <MessageCircle className="w-4 h-4 text-primary" />
-            <span className="truncate">{itemTitle}</span>
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="flex items-center gap-2 text-base">
+              <MessageCircle className="w-4 h-4 text-primary" />
+              <span className="truncate">{itemTitle}</span>
+            </DialogTitle>
+            {negotiation && (
+              <MeetupProposal
+                negotiationId={negotiation.id}
+                buyerId={negotiation.buyer_id}
+                sellerId={negotiation.seller_id}
+              />
+            )}
+          </div>
           <p className="text-xs text-muted-foreground">Negotiating with {otherUserName}</p>
         </DialogHeader>
 
