@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Menu, X, LogOut, User, MessageCircle, Bell } from "lucide-react";
 import logoImg from "@/assets/logo.png";
 import { Link, useNavigate } from "react-router-dom";
