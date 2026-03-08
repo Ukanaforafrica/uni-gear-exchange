@@ -14,7 +14,144 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      item_requests: {
+        Row: {
+          budget_max: number
+          budget_min: number
+          category: string
+          created_at: string
+          description: string
+          id: string
+          status: string
+          title: string
+          university: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_max?: number
+          budget_min?: number
+          category: string
+          created_at?: string
+          description?: string
+          id?: string
+          status?: string
+          title: string
+          university: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_max?: number
+          budget_min?: number
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          status?: string
+          title?: string
+          university?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          category: string
+          condition: string
+          created_at: string
+          defects: string
+          description: string
+          expires_at: string
+          id: string
+          listed_at: string
+          negotiable: boolean
+          photos: string[]
+          price: number
+          relist_count: number
+          status: string
+          title: string
+          university: string
+          updated_at: string
+          usage_duration: string
+          user_id: string
+          video_url: string
+        }
+        Insert: {
+          category: string
+          condition?: string
+          created_at?: string
+          defects?: string
+          description?: string
+          expires_at?: string
+          id?: string
+          listed_at?: string
+          negotiable?: boolean
+          photos?: string[]
+          price: number
+          relist_count?: number
+          status?: string
+          title: string
+          university: string
+          updated_at?: string
+          usage_duration?: string
+          user_id: string
+          video_url?: string
+        }
+        Update: {
+          category?: string
+          condition?: string
+          created_at?: string
+          defects?: string
+          description?: string
+          expires_at?: string
+          id?: string
+          listed_at?: string
+          negotiable?: boolean
+          photos?: string[]
+          price?: number
+          relist_count?: number
+          status?: string
+          title?: string
+          university?: string
+          updated_at?: string
+          usage_duration?: string
+          user_id?: string
+          video_url?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string
+          created_at: string
+          full_name: string
+          id: string
+          phone: string
+          university: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string
+          created_at?: string
+          full_name?: string
+          id: string
+          phone?: string
+          university?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          university?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

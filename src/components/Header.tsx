@@ -31,6 +31,7 @@ const Header = () => {
             <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Home</Link>
             <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
             <Link to="/request" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Request Item</Link>
+            <Link to="/sell" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Sell Item</Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -72,6 +73,7 @@ const Header = () => {
               <Link to="/" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Home</Link>
               <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
               <Link to="/request" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Request Item</Link>
+              <Link to="/sell" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Sell Item</Link>
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
                 {user ? (
                   <>
