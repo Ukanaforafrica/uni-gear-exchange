@@ -480,6 +480,46 @@ const Profile = () => {
                 )}
               </CardContent>
             </Card>
+
+            {/* Reviews received */}
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-400" />
+                  Reviews Received ({reviews.length})
+                </CardTitle>
+                {avgRating > 0 && (
+                  <CardDescription>Average rating: {avgRating}/5</CardDescription>
+                )}
+              </CardHeader>
+              <CardContent>
+                {reviews.length === 0 ? (
+                  <p className="text-muted-foreground text-sm text-center py-4">No reviews yet. Complete a deal to get your first review!</p>
+                ) : (
+                  <div className="space-y-3">
+                    {reviews.map((review) => (
+                      <div key={review.id} className="p-3 rounded-lg border border-border bg-muted/30 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-foreground">{review.reviewer_name}</span>
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                className={`w-3.5 h-3.5 ${s <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="text-sm text-muted-foreground">{review.comment}</p>
+                        )}
+                        <p className="text-[10px] text-muted-foreground">{formatDate(review.created_at)}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* === NOTIFICATIONS TAB === */}
