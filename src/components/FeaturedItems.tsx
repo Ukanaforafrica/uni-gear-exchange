@@ -62,6 +62,17 @@ const featuredItems = [
 ];
 
 const FeaturedItems = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleNegotiate = () => {
+    if (!user) {
+      navigate("/signup");
+    } else {
+      navigate("/marketplace");
+    }
+  };
+
   return (
     <section className="py-20 bg-background">
       <div className="container mx-auto px-4">
