@@ -410,6 +410,15 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Review prompt after deal close */}
+      <ReviewPrompt
+        open={showReview}
+        onOpenChange={setShowReview}
+        negotiationId={negotiationId}
+        revieweeId={user?.id === buyerId ? sellerId : buyerId}
+        revieweeName="the other party"
+      />
     </>
   );
 };
