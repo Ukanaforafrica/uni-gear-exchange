@@ -212,6 +212,13 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
     await (supabase as any).from("meetup_proposals").update(updates).eq("id", proposal.id);
     setLoading(false);
     toast({ title: bothAccepted ? "✅ Meetup confirmed!" : "Accepted", description: bothAccepted ? "Both parties agreed. See you there!" : "Waiting for the other party to accept." });
+    // Push notification to the other party
+    const recipientId = user!.id === buyerId ? sellerId : buyerId;
+    if (bothAccepted) {
+      sendPushToUser(recipientId, "✅ Meetup Confirmed!", "Both parties agreed on the meetup. See you there!", "/negotiations");
+    } else {
+      sendPushToUser(recipientId, "👍 Meetup Accepted", "The other party accepted your meetup proposal.", "/negotiations");
+    }
   };
 
   const handleCounter = () => {

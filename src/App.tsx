@@ -25,6 +25,7 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <NotificationProvider>
+          <PushNotificationInit />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />

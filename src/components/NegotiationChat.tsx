@@ -138,6 +138,11 @@ const NegotiationChat = ({
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     } else {
       setNewMessage("");
+      // Send push notification to the other party
+      if (negotiation) {
+        const recipientId = user.id === negotiation.buyer_id ? negotiation.seller_id : negotiation.buyer_id;
+        sendPushToUser(recipientId, `New message - ${itemTitle}`, newMessage.trim(), "/negotiations");
+      }
     }
     setSending(false);
   };
