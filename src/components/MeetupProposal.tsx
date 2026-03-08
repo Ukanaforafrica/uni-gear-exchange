@@ -189,6 +189,9 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
     setEditing(false);
     setLoading(false);
     toast({ title: "Proposal sent", description: "Meetup details sent to the other party." });
+    // Push notification to the other party
+    const recipientId = user!.id === buyerId ? sellerId : buyerId;
+    sendPushToUser(recipientId, "📍 New Meetup Proposal", `${meetupLocation.trim()} at ${new Date(meetupTime).toLocaleString()}`, "/negotiations");
   };
 
   const handleAccept = async () => {
