@@ -256,6 +256,11 @@ const Negotiations = () => {
                       )}
                     </div>
                     <div className="flex flex-col items-end gap-1 shrink-0">
+                      {(unreadByChat[neg.id] || 0) > 0 && (
+                        <span className="min-w-[20px] h-[20px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold leading-none px-1 shadow-sm animate-in zoom-in-50 duration-200">
+                          {unreadByChat[neg.id] > 99 ? "99+" : unreadByChat[neg.id]}
+                        </span>
+                      )}
                       <span className="text-xs text-muted-foreground flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDate(neg.updated_at)}
