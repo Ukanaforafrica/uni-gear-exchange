@@ -201,6 +201,42 @@ const RequestItem = () => {
                 </div>
               </div>
 
+              <div className="space-y-2">
+                <Label>Photos (optional, up to {MAX_PHOTOS})</Label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={handlePhotoSelect}
+                />
+                <div className="flex flex-wrap gap-3">
+                  {photoPreviews.map((src, i) => (
+                    <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removePhoto(i)}
+                        className="absolute top-0.5 right-0.5 bg-destructive text-destructive-foreground rounded-full p-0.5"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {photos.length < MAX_PHOTOS && (
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="w-20 h-20 rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                    >
+                      <ImagePlus className="w-5 h-5" />
+                      <span className="text-[10px] mt-1">Add</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
               <Button type="submit" className="w-full" size="lg" disabled={loading}>
                 <Send className="w-4 h-4" />
                 {loading ? "Posting..." : "Post Request"}
