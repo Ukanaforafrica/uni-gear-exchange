@@ -62,9 +62,11 @@ const Header = () => {
                     📍 {profile.university}
                   </span>
                 )}
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <User className="w-4 h-4" />
-                  {profile?.full_name || "Profile"}
+                <Button variant="ghost" size="sm" className="gap-2" asChild>
+                  <Link to="/profile">
+                    <User className="w-4 h-4" />
+                    {profile?.full_name || "Profile"}
+                  </Link>
                 </Button>
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   <LogOut className="w-4 h-4" />
