@@ -137,6 +137,7 @@ const Negotiations = () => {
             ...neg,
             itemTitle,
             otherUserName,
+            otherUserAvatar,
             lastMessage: msgs?.[0]?.message,
             messageCount: 0, // We'll get count separately
           };
