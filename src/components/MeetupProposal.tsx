@@ -257,7 +257,9 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
     }
 
     setLoading(false);
-    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete and the listing has been removed." });
+    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete." });
+    setShowCloseDeal(false);
+    setShowReview(true);
   };
 
   const formatDateTime = (dateStr: string) => {
