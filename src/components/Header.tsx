@@ -121,11 +121,10 @@ const Header = () => {
               <div className="flex flex-col gap-2 pt-4 border-t border-border">
                 {user ? (
                   <>
-                    {profile && (
-                      <span className="text-sm text-muted-foreground font-medium py-2">
-                        📍 {profile.university} • {profile.full_name}
-                      </span>
-                    )}
+                    <Link to="/profile" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                      <User className="w-4 h-4" />
+                      {profile?.full_name || "Profile"} • {profile?.university}
+                    </Link>
                     <Button variant="outline" onClick={() => { handleSignOut(); setIsMenuOpen(false); }} className="w-full">
                       <LogOut className="w-4 h-4 mr-2" /> Sign Out
                     </Button>
