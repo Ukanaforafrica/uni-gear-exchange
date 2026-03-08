@@ -42,6 +42,7 @@ const NegotiationChat = ({
   const [negotiation, setNegotiation] = useState<Negotiation | null>(null);
   const [recording, setRecording] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [resolvedAvatar, setResolvedAvatar] = useState(otherUserAvatar || "");
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
@@ -56,7 +57,16 @@ const NegotiationChat = ({
         (supabase as any).from("negotiations").select("*").eq("id", negotiationId).single(),
         (supabase as any).from("negotiation_messages").select("*").eq("negotiation_id", negotiationId).order("created_at", { ascending: true }),
       ]);
-      if (negRes.data) setNegotiation(negRes.data as Negotiation);
+      if (negRes.data) {
+        setNegotiation(negRes.data as Negotiation);
+        // Fetch other user's avatar if not provided via props
+        if (!otherUserAvatar && user) {
+          const neg = negRes.data as Negotiation;
+          const otherId = user.id === neg.buyer_id ? neg.seller_id : neg.buyer_id;
+          const { data: prof } = await (supabase as any).from("profiles").select("avatar_url").eq("id", otherId).single();
+          if (prof?.avatar_url) setResolvedAvatar(prof.avatar_url);
+        }
+      }
       if (msgRes.data) setMessages(msgRes.data as NegotiationMessage[]);
     };
     fetchData();
@@ -269,8 +279,16 @@ const NegotiationChat = ({
         <DialogHeader className="p-4 pb-2 border-b border-border">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-base">
-              <MessageCircle className="w-4 h-4 text-primary" />
-              <span className="truncate">{itemTitle}</span>
+              <Avatar className="w-8 h-8 shrink-0">
+                {resolvedAvatar ? <AvatarImage src={resolvedAvatar} alt={otherUserName} /> : null}
+                <AvatarFallback className="text-xs bg-accent text-accent-foreground">
+                  {otherUserName.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col min-w-0">
+                <span className="truncate text-sm font-semibold">{itemTitle}</span>
+                <span className="text-xs text-muted-foreground font-normal">with {otherUserName}</span>
+              </div>
             </DialogTitle>
             {negotiation && (
               <MeetupProposal
@@ -283,7 +301,6 @@ const NegotiationChat = ({
               />
             )}
           </div>
-          <p className="text-xs text-muted-foreground">Negotiating with {otherUserName}</p>
         </DialogHeader>
 
         {/* Messages */}
@@ -299,7 +316,7 @@ const NegotiationChat = ({
               <div key={msg.id} className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
                 {!isMine && (
                   <Avatar className="w-7 h-7 shrink-0">
-                    {otherUserAvatar ? <AvatarImage src={otherUserAvatar} alt={otherUserName} /> : null}
+                    {resolvedAvatar ? <AvatarImage src={resolvedAvatar} alt={otherUserName} /> : null}
                     <AvatarFallback className="text-[10px] bg-accent text-accent-foreground">
                       {otherUserName.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
