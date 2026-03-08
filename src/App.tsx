@@ -14,6 +14,7 @@ import RequestItem from "./pages/RequestItem";
 import ListItem from "./pages/ListItem";
 import Marketplace from "./pages/Marketplace";
 import Negotiations from "./pages/Negotiations";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,6 +36,7 @@ const App = () => (
             <Route path="/sell" element={<ListItem />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/negotiations" element={<Negotiations />} />
+            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
