@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { sendPushToUser } from "@/hooks/usePushNotifications";
 import {
   Dialog,
   DialogContent,
@@ -137,6 +138,11 @@ const NegotiationChat = ({
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
     } else {
       setNewMessage("");
+      // Send push notification to the other party
+      if (negotiation) {
+        const recipientId = user.id === negotiation.buyer_id ? negotiation.seller_id : negotiation.buyer_id;
+        sendPushToUser(recipientId, `New message - ${itemTitle}`, newMessage.trim(), "/negotiations");
+      }
     }
     setSending(false);
   };
