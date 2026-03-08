@@ -63,17 +63,34 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     await Promise.all(
       negs.map(async (n: any) => {
         const chatSince = getChatLastSeen(user.id, n.id);
-        // Use the more recent of global and per-chat last seen
         const since = chatSince > globalSince ? chatSince : globalSince;
 
-        const { count } = await (supabase as any)
+        // Count unread messages
+        const { count: msgCount } = await (supabase as any)
           .from("negotiation_messages")
           .select("*", { count: "exact", head: true })
           .eq("negotiation_id", n.id)
           .neq("sender_id", user.id)
           .gt("created_at", since);
 
-        const c = count || 0;
+        // Count unread meetup proposals (proposed by the other user or updated after last seen)
+        const { count: meetupCount } = await (supabase as any)
+          .from("meetup_proposals")
+          .select("*", { count: "exact", head: true })
+          .eq("negotiation_id", n.id)
+          .neq("proposed_by", user.id)
+          .gt("created_at", since);
+
+        // Count meetup acceptance updates (where the other party accepted after last seen)
+        const { count: meetupUpdateCount } = await (supabase as any)
+          .from("meetup_proposals")
+          .select("*", { count: "exact", head: true })
+          .eq("negotiation_id", n.id)
+          .gt("updated_at", since)
+          .neq("proposed_by", user.id)
+          .or("buyer_accepted.eq.true,seller_accepted.eq.true");
+
+        const c = (msgCount || 0) + (meetupCount || 0) + (meetupUpdateCount || 0);
         perChat[n.id] = c;
         totalUnread += c;
       })
@@ -108,6 +125,46 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
             setUnreadByChat((prev) => ({
               ...prev,
               [msg.negotiation_id]: (prev[msg.negotiation_id] || 0) + 1,
+            }));
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "meetup_proposals",
+        },
+        (payload) => {
+          const proposal = payload.new as any;
+          if (proposal.proposed_by !== user.id) {
+            setUnreadCount((prev) => prev + 1);
+            setUnreadByChat((prev) => ({
+              ...prev,
+              [proposal.negotiation_id]: (prev[proposal.negotiation_id] || 0) + 1,
+            }));
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "meetup_proposals",
+        },
+        (payload) => {
+          const proposal = payload.new as any;
+          const old = payload.old as any;
+          // Notify if the other party just accepted
+          const buyerJustAccepted = proposal.buyer_accepted && !old.buyer_accepted;
+          const sellerJustAccepted = proposal.seller_accepted && !old.seller_accepted;
+          if ((buyerJustAccepted || sellerJustAccepted) && proposal.proposed_by !== user.id) {
+            setUnreadCount((prev) => prev + 1);
+            setUnreadByChat((prev) => ({
+              ...prev,
+              [proposal.negotiation_id]: (prev[proposal.negotiation_id] || 0) + 1,
             }));
           }
         }
