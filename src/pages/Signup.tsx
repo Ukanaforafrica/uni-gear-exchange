@@ -29,25 +29,16 @@ const Signup = () => {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: window.location.origin },
+      options: {
+        emailRedirectTo: window.location.origin,
+        data: { full_name: fullName, university },
+      },
     });
 
     if (error) {
       setLoading(false);
       toast({ title: "Signup failed", description: error.message, variant: "destructive" });
       return;
-    }
-
-    if (data.user) {
-      const { error: profileError } = await (supabase as any).from("profiles").insert({
-        id: data.user.id,
-        full_name: fullName,
-        university,
-      } as any);
-
-      if (profileError) {
-        console.error("Profile creation error:", profileError);
-      }
     }
 
     setLoading(false);
