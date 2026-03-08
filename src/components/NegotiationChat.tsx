@@ -120,8 +120,25 @@ const NegotiationChat = ({
     }
   };
 
+  const containsPhoneNumber = (text: string): boolean => {
+    const stripped = text.replace(/[\s\-().]/g, "");
+    // Match international format +234..., or local 0x0... patterns, or any 10-14 digit sequences
+    const patterns = [
+      /\+?\d{1,4}[\s\-]?\d{7,12}/,          // international numbers
+      /\b0[7-9][01]\d{8}\b/,                  // Nigerian mobile: 070,080,081,090...
+      /\b0[7-9][01][\s\-]?\d{4}[\s\-]?\d{4}/, // spaced Nigerian mobile
+      /\+234\d{7,10}/,                         // +234 prefix
+      /234\d{10}/,                             // 234 prefix without +
+    ];
+    return patterns.some((p) => p.test(stripped) || p.test(text));
+  };
+
   const handleSend = async () => {
     if (!newMessage.trim() || !user || !negotiationId || sending) return;
+    if (containsPhoneNumber(newMessage)) {
+      toast({ title: "Phone numbers not allowed", description: "Sharing phone numbers is restricted on this platform.", variant: "destructive" });
+      return;
+    }
     if (isLocked) {
       toast({ title: "Chat locked", description: `Pay ₦${CHAT_UNLOCK_PRICE.toLocaleString()} to continue chatting.`, variant: "destructive" });
       return;
