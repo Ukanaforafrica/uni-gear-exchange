@@ -25,7 +25,39 @@ const RequestItem = () => {
   const [category, setCategory] = useState("");
   const [budgetMin, setBudgetMin] = useState("");
   const [budgetMax, setBudgetMax] = useState("");
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const remaining = MAX_PHOTOS - photos.length;
+    const selected = files.slice(0, remaining);
+    const newPreviews = selected.map((f) => URL.createObjectURL(f));
+    setPhotos((prev) => [...prev, ...selected]);
+    setPhotoPreviews((prev) => [...prev, ...newPreviews]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const removePhoto = (index: number) => {
+    URL.revokeObjectURL(photoPreviews[index]);
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
+    setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const uploadPhotos = async (): Promise<string[]> => {
+    const urls: string[] = [];
+    for (const file of photos) {
+      const ext = file.name.split(".").pop();
+      const path = `${user!.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from("item-photos").upload(path, file);
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from("item-photos").getPublicUrl(path);
+      urls.push(urlData.publicUrl);
+    }
+    return urls;
+  };
 
   if (!user || !profile) {
     return (
