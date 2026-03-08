@@ -55,7 +55,6 @@ const Profile = () => {
   // Reviews
   const [reviews, setReviews] = useState<Review[]>([]);
   const [avgRating, setAvgRating] = useState(0);
-  const [loadingDeals, setLoadingDeals] = useState(true);
 
   // Notifications
   const [pushEnabled, setPushEnabled] = useState(false);
