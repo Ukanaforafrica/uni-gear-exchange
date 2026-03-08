@@ -100,10 +100,14 @@ export interface Negotiation {
   updated_at: string;
 }
 
+export type MessageType = 'text' | 'image' | 'voice' | 'video';
+
 export interface NegotiationMessage {
   id: string;
   negotiation_id: string;
   sender_id: string;
   message: string;
+  message_type: MessageType;
+  media_url: string;
   created_at: string;
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -10,9 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Send, Lock, MessageCircle } from "lucide-react";
-import type { Negotiation, NegotiationMessage } from "@/lib/types";
+import { Send, Lock, MessageCircle, Image, Mic, Video, Square, Loader2 } from "lucide-react";
+import type { Negotiation, NegotiationMessage, MessageType } from "@/lib/types";
 import { FREE_MESSAGE_LIMIT, CHAT_UNLOCK_PRICE } from "@/lib/types";
 
 interface NegotiationChatProps {
@@ -36,7 +35,13 @@ const NegotiationChat = ({
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [negotiation, setNegotiation] = useState<Negotiation | null>(null);
+  const [recording, setRecording] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   useEffect(() => {
     if (!open || !negotiationId) return;
@@ -51,7 +56,6 @@ const NegotiationChat = ({
     };
     fetchData();
 
-    // Realtime subscription
     const channel = supabase
       .channel(`neg-${negotiationId}`)
       .on(
@@ -63,7 +67,10 @@ const NegotiationChat = ({
           filter: `negotiation_id=eq.${negotiationId}`,
         },
         (payload) => {
-          setMessages((prev) => [...prev, payload.new as NegotiationMessage]);
+          setMessages((prev) => {
+            if (prev.some((m) => m.id === (payload.new as NegotiationMessage).id)) return prev;
+            return [...prev, payload.new as NegotiationMessage];
+          });
         }
       )
       .subscribe();
@@ -82,19 +89,48 @@ const NegotiationChat = ({
   const isLocked = !negotiation?.paid && messages.length >= FREE_MESSAGE_LIMIT;
   const remainingFree = Math.max(0, FREE_MESSAGE_LIMIT - messages.length);
 
+  const uploadMedia = async (file: Blob, ext: string): Promise<string | null> => {
+    const path = `${negotiationId}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from("chat-media").upload(path, file);
+    if (error) {
+      toast({ title: "Upload failed", description: error.message, variant: "destructive" });
+      return null;
+    }
+    const { data } = supabase.storage.from("chat-media").getPublicUrl(path);
+    return data.publicUrl;
+  };
+
+  const sendMediaMessage = async (mediaUrl: string, type: MessageType, caption?: string) => {
+    if (!user || !negotiationId) return;
+    if (isLocked) {
+      toast({ title: "Chat locked", description: `Pay ₦${CHAT_UNLOCK_PRICE.toLocaleString()} to continue.`, variant: "destructive" });
+      return;
+    }
+    const { error } = await (supabase as any).from("negotiation_messages").insert({
+      negotiation_id: negotiationId,
+      sender_id: user.id,
+      message: caption || "",
+      message_type: type,
+      media_url: mediaUrl,
+    });
+    if (error) {
+      toast({ title: "Error", description: "Failed to send", variant: "destructive" });
+    }
+  };
+
   const handleSend = async () => {
     if (!newMessage.trim() || !user || !negotiationId || sending) return;
-
     if (isLocked) {
       toast({ title: "Chat locked", description: `Pay ₦${CHAT_UNLOCK_PRICE.toLocaleString()} to continue chatting.`, variant: "destructive" });
       return;
     }
-
     setSending(true);
     const { error } = await (supabase as any).from("negotiation_messages").insert({
       negotiation_id: negotiationId,
       sender_id: user.id,
       message: newMessage.trim(),
+      message_type: "text",
+      media_url: "",
     });
     if (error) {
       toast({ title: "Error", description: "Failed to send message", variant: "destructive" });
@@ -104,19 +140,100 @@ const NegotiationChat = ({
     setSending(false);
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, type: MessageType) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop() || (type === "image" ? "jpg" : "mp4");
+    const url = await uploadMedia(file, ext);
+    if (url) await sendMediaMessage(url, type);
+    setUploading(false);
+    e.target.value = "";
+  };
+
+  const toggleRecording = useCallback(async () => {
+    if (recording) {
+      mediaRecorderRef.current?.stop();
+      setRecording(false);
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      chunksRef.current = [];
+
+      recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
+      recorder.onstop = async () => {
+        stream.getTracks().forEach((t) => t.stop());
+        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        setUploading(true);
+        const url = await uploadMedia(blob, "webm");
+        if (url) await sendMediaMessage(url, "voice");
+        setUploading(false);
+      };
+
+      recorder.start();
+      setRecording(true);
+    } catch {
+      toast({ title: "Microphone access denied", description: "Please allow microphone access to send voice notes.", variant: "destructive" });
+    }
+  }, [recording, negotiationId, user]);
+
   const handleUnlock = async () => {
-    // For now, mark as paid directly. Payment integration can be added later.
     toast({
       title: "Payment Required",
       description: `₦${CHAT_UNLOCK_PRICE.toLocaleString()} payment integration coming soon. Chat unlocked for now!`,
     });
     await (supabase as any).from("negotiations").update({ paid: true }).eq("id", negotiationId);
-    setNegotiation((prev) => prev ? { ...prev, paid: true } : prev);
+    setNegotiation((prev) => (prev ? { ...prev, paid: true } : prev));
   };
 
   const formatTime = (dateStr: string) => {
     const d = new Date(dateStr);
     return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  };
+
+  const renderMessageContent = (msg: NegotiationMessage) => {
+    const type = msg.message_type || "text";
+
+    if (type === "image" && msg.media_url) {
+      return (
+        <div>
+          <img
+            src={msg.media_url}
+            alt="Shared image"
+            className="rounded-lg max-w-full max-h-48 object-cover cursor-pointer"
+            onClick={() => window.open(msg.media_url, "_blank")}
+          />
+          {msg.message && <p className="mt-1.5 text-sm">{msg.message}</p>}
+        </div>
+      );
+    }
+
+    if (type === "voice" && msg.media_url) {
+      return (
+        <div className="min-w-[180px]">
+          <audio controls src={msg.media_url} className="max-w-full h-8" />
+        </div>
+      );
+    }
+
+    if (type === "video" && msg.media_url) {
+      return (
+        <div>
+          <video
+            controls
+            src={msg.media_url}
+            className="rounded-lg max-w-full max-h-48"
+          />
+          {msg.message && <p className="mt-1.5 text-sm">{msg.message}</p>}
+        </div>
+      );
+    }
+
+    return <p>{msg.message}</p>;
   };
 
   return (
@@ -148,7 +265,7 @@ const NegotiationChat = ({
                       : "bg-muted text-foreground rounded-bl-sm"
                   }`}
                 >
-                  <p>{msg.message}</p>
+                  {renderMessageContent(msg)}
                   <p className={`text-[10px] mt-1 ${isMine ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
                     {formatTime(msg.created_at)}
                   </p>
@@ -169,6 +286,22 @@ const NegotiationChat = ({
           </div>
         )}
 
+        {/* Hidden file inputs */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => handleFileUpload(e, "image")}
+        />
+        <input
+          ref={videoInputRef}
+          type="file"
+          accept="video/*"
+          className="hidden"
+          onChange={(e) => handleFileUpload(e, "video")}
+        />
+
         {/* Locked overlay */}
         {isLocked ? (
           <div className="p-4 border-t border-border bg-muted/30 text-center space-y-3">
@@ -182,22 +315,71 @@ const NegotiationChat = ({
             </Button>
           </div>
         ) : (
-          <div className="p-3 border-t border-border flex gap-2">
-            <Textarea
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
-              className="min-h-[40px] max-h-[80px] resize-none text-sm"
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-            />
-            <Button size="icon" onClick={handleSend} disabled={sending || !newMessage.trim()}>
-              <Send className="w-4 h-4" />
-            </Button>
+          <div className="p-3 border-t border-border space-y-2">
+            {uploading && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground px-1">
+                <Loader2 className="w-3 h-3 animate-spin" />
+                Uploading media...
+              </div>
+            )}
+            <div className="flex items-end gap-2">
+              {/* Media buttons */}
+              <div className="flex gap-1">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 shrink-0"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  title="Send image"
+                >
+                  <Image className="w-4 h-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className={`h-9 w-9 shrink-0 ${recording ? "text-destructive bg-destructive/10" : ""}`}
+                  onClick={toggleRecording}
+                  disabled={uploading}
+                  title={recording ? "Stop recording" : "Record voice note"}
+                >
+                  {recording ? <Square className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 shrink-0"
+                  onClick={() => videoInputRef.current?.click()}
+                  disabled={uploading}
+                  title="Send video"
+                >
+                  <Video className="w-4 h-4" />
+                </Button>
+              </div>
+              <Textarea
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                placeholder="Type a message..."
+                className="min-h-[40px] max-h-[80px] resize-none text-sm flex-1"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+              />
+              <Button size="icon" className="shrink-0" onClick={handleSend} disabled={sending || !newMessage.trim()}>
+                <Send className="w-4 h-4" />
+              </Button>
+            </div>
+            {recording && (
+              <p className="text-xs text-destructive text-center animate-pulse">
+                🎙️ Recording... tap stop to send
+              </p>
+            )}
           </div>
         )}
       </DialogContent>
