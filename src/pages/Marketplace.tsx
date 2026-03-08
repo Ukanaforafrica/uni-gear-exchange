@@ -29,8 +29,8 @@ const Marketplace = () => {
   useEffect(() => {
     const fetchData = async () => {
       const [reqRes, itemRes] = await Promise.all([
-        (supabase as any).from("item_requests").select("*").order("created_at", { ascending: false }),
-        (supabase as any).from("items").select("*").order("created_at", { ascending: false }),
+        (supabase as any).from("item_requests").select("*").eq("status", "active").order("created_at", { ascending: false }),
+        (supabase as any).from("items").select("*").eq("status", "active").order("created_at", { ascending: false }),
       ]);
       setRequests((reqRes.data as ItemRequest[]) || []);
       setItems((itemRes.data as Item[]) || []);
