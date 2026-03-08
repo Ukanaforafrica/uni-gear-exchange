@@ -27,9 +27,12 @@ interface MeetupProposalProps {
   negotiationId: string;
   buyerId: string;
   sellerId: string;
+  itemId?: string | null;
+  itemRequestId?: string | null;
+  itemType: 'item' | 'request';
 }
 
-const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProps) => {
+const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestId, itemType }: MeetupProposalProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [proposal, setProposal] = useState<MeetupProposalType | null>(null);
@@ -218,14 +221,30 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
   const handleCloseDeal = async () => {
     if (!proposal) return;
     setLoading(true);
+    
+    // Update negotiation status
     await (supabase as any).from("negotiations").update({
       deal_closed: true,
       closed_by: user!.id,
       closed_at: new Date().toISOString(),
       status: "completed",
     }).eq("id", negotiationId);
+
+    // Mark the item or request as sold/fulfilled
+    if (itemType === "item" && itemId) {
+      await (supabase as any).from("items").update({
+        status: "sold",
+        updated_at: new Date().toISOString(),
+      }).eq("id", itemId);
+    } else if (itemType === "request" && itemRequestId) {
+      await (supabase as any).from("item_requests").update({
+        status: "fulfilled",
+        updated_at: new Date().toISOString(),
+      }).eq("id", itemRequestId);
+    }
+
     setLoading(false);
-    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete." });
+    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete and the listing has been removed." });
   };
 
   const formatDateTime = (dateStr: string) => {
