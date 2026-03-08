@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import ReviewPrompt from "@/components/ReviewPrompt";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -45,6 +46,7 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
   const [editing, setEditing] = useState(false);
   const reminderIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [reminderActive, setReminderActive] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const isSeller = user?.id === sellerId;
   const isBuyer = user?.id === buyerId;
@@ -255,7 +257,9 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
     }
 
     setLoading(false);
-    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete and the listing has been removed." });
+    toast({ title: "🎉 Deal Closed!", description: "The transaction has been marked as complete." });
+    setShowCloseDeal(false);
+    setShowReview(true);
   };
 
   const formatDateTime = (dateStr: string) => {
@@ -406,6 +410,15 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Review prompt after deal close */}
+      <ReviewPrompt
+        open={showReview}
+        onOpenChange={setShowReview}
+        negotiationId={negotiationId}
+        revieweeId={user?.id === buyerId ? sellerId : buyerId}
+        revieweeName="the other party"
+      />
     </>
   );
 };

@@ -14,9 +14,20 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Package, History, Bell, Camera, Loader2, Edit2, Check, X, ExternalLink } from "lucide-react";
+import { User, Package, History, Bell, Camera, Loader2, Edit2, Check, X, Star } from "lucide-react";
 import { UNIVERSITIES, type NigerianUniversity } from "@/lib/types";
 import type { Item, ItemRequest, Negotiation } from "@/lib/types";
+
+interface Review {
+  id: string;
+  negotiation_id: string;
+  reviewer_id: string;
+  reviewee_id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  reviewer_name?: string;
+}
 
 const Profile = () => {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
@@ -40,6 +51,10 @@ const Profile = () => {
   // Deals
   const [deals, setDeals] = useState<(Negotiation & { itemTitle: string; otherName: string })[]>([]);
   const [loadingDeals, setLoadingDeals] = useState(true);
+
+  // Reviews
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [avgRating, setAvgRating] = useState(0);
 
   // Notifications
   const [pushEnabled, setPushEnabled] = useState(false);
@@ -67,6 +82,7 @@ const Profile = () => {
 
     fetchListings();
     fetchDeals();
+    fetchReviews();
   }, [user]);
 
   const fetchListings = async () => {
@@ -114,6 +130,31 @@ const Profile = () => {
     );
     setDeals(enriched);
     setLoadingDeals(false);
+  };
+
+  const fetchReviews = async () => {
+    if (!user) return;
+    const { data } = await (supabase as any)
+      .from("reviews")
+      .select("*")
+      .eq("reviewee_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (data && data.length > 0) {
+      // Fetch reviewer names
+      const enriched: Review[] = await Promise.all(
+        data.map(async (r: any) => {
+          const { data: prof } = await (supabase as any).from("profiles").select("full_name").eq("id", r.reviewer_id).single();
+          return { ...r, reviewer_name: prof?.full_name || "Anonymous" };
+        })
+      );
+      setReviews(enriched);
+      const avg = enriched.reduce((sum, r) => sum + r.rating, 0) / enriched.length;
+      setAvgRating(Math.round(avg * 10) / 10);
+    } else {
+      setReviews([]);
+      setAvgRating(0);
+    }
   };
 
   const handleSaveProfile = async () => {
@@ -273,6 +314,13 @@ const Profile = () => {
             <h1 className="text-2xl font-bold text-foreground">{profile.full_name || "Your Profile"}</h1>
             <p className="text-muted-foreground text-sm">📍 {UNIVERSITIES.find(u => u.value === profile.university)?.label || profile.university}</p>
             <p className="text-muted-foreground text-xs">Joined {formatDate(profile.created_at)}</p>
+            {reviews.length > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-semibold text-foreground">{avgRating}</span>
+                <span className="text-xs text-muted-foreground">({reviews.length} review{reviews.length !== 1 ? "s" : ""})</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -426,6 +474,46 @@ const Profile = () => {
                           <p className="text-xs text-muted-foreground">with {deal.otherName} • {deal.closed_at ? formatDate(deal.closed_at) : "—"}</p>
                         </div>
                         <Badge variant="secondary" className="text-xs bg-secondary/10 text-secondary">Closed</Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Reviews received */}
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-400" />
+                  Reviews Received ({reviews.length})
+                </CardTitle>
+                {avgRating > 0 && (
+                  <CardDescription>Average rating: {avgRating}/5</CardDescription>
+                )}
+              </CardHeader>
+              <CardContent>
+                {reviews.length === 0 ? (
+                  <p className="text-muted-foreground text-sm text-center py-4">No reviews yet. Complete a deal to get your first review!</p>
+                ) : (
+                  <div className="space-y-3">
+                    {reviews.map((review) => (
+                      <div key={review.id} className="p-3 rounded-lg border border-border bg-muted/30 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium text-foreground">{review.reviewer_name}</span>
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((s) => (
+                              <Star
+                                key={s}
+                                className={`w-3.5 h-3.5 ${s <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground/30"}`}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        {review.comment && (
+                          <p className="text-sm text-muted-foreground">{review.comment}</p>
+                        )}
+                        <p className="text-[10px] text-muted-foreground">{formatDate(review.created_at)}</p>
                       </div>
                     ))}
                   </div>
