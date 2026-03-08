@@ -27,6 +27,9 @@ interface MeetupProposalProps {
   negotiationId: string;
   buyerId: string;
   sellerId: string;
+  itemId?: string | null;
+  itemRequestId?: string | null;
+  itemType: 'item' | 'request';
 }
 
 const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProps) => {
