@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Lock, MessageCircle, Image, Mic, Video, Square, Loader2 } from "lucide-react";
+import MeetupProposal from "@/components/MeetupProposal";
 import type { Negotiation, NegotiationMessage, MessageType } from "@/lib/types";
 import { FREE_MESSAGE_LIMIT, CHAT_UNLOCK_PRICE } from "@/lib/types";
 
