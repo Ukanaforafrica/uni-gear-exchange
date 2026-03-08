@@ -8,7 +8,7 @@ import { useNotifications } from "@/contexts/NotificationContext";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, profile, signOut } = useAuth();
-  const { unreadCount, clearUnread } = useNotifications();
+  const { unreadCount, markAsSeen } = useNotifications();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -33,10 +33,10 @@ const Header = () => {
             {user ? (
               <>
                 <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
-                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={clearUnread}>
+                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={markAsSeen}>
                   <MessageCircle className="w-4 h-4" />Negotiations
                 </Link>
-                <Link to="/negotiations" className="relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all" onClick={clearUnread} aria-label="Notifications">
+                <Link to="/negotiations" className="relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all" onClick={markAsSeen} aria-label="Notifications">
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold leading-none px-1 shadow-sm animate-in zoom-in-50 duration-200">
@@ -94,10 +94,10 @@ const Header = () => {
               {user ? (
                 <>
                   <Link to="/marketplace" className="text-foreground font-medium py-2" onClick={() => setIsMenuOpen(false)}>Marketplace</Link>
-                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); clearUnread(); }}>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); markAsSeen(); }}>
                     <MessageCircle className="w-4 h-4" />Negotiations
                   </Link>
-                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); clearUnread(); }}>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); markAsSeen(); }}>
                     <div className="relative">
                       <Bell className="w-4 h-4" />
                       {unreadCount > 0 && (
