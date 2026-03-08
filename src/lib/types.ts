@@ -38,6 +38,9 @@ export const USAGE_DURATIONS = [
   '2+ years',
 ] as const;
 
+export const FREE_MESSAGE_LIMIT = 20;
+export const CHAT_UNLOCK_PRICE = 1000; // ₦1,000
+
 export interface Profile {
   id: string;
   full_name: string;
@@ -82,4 +85,25 @@ export interface Item {
   relist_count: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface Negotiation {
+  id: string;
+  item_id: string | null;
+  item_request_id: string | null;
+  item_type: 'item' | 'request';
+  buyer_id: string;
+  seller_id: string;
+  status: string;
+  paid: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface NegotiationMessage {
+  id: string;
+  negotiation_id: string;
+  sender_id: string;
+  message: string;
+  created_at: string;
 }
