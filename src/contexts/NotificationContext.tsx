@@ -4,31 +4,43 @@ import { useAuth } from "@/contexts/AuthContext";
 
 interface NotificationContextType {
   unreadCount: number;
+  unreadByChat: Record<string, number>;
   markAsSeen: () => void;
+  markChatAsSeen: (negotiationId: string) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType>({
   unreadCount: 0,
+  unreadByChat: {},
   markAsSeen: () => {},
+  markChatAsSeen: () => {},
 });
 
 export const useNotifications = () => useContext(NotificationContext);
 
 const getLastSeenKey = (userId: string) => `notif_last_seen_${userId}`;
+const getChatLastSeenKey = (userId: string, negId: string) => `notif_chat_seen_${userId}_${negId}`;
 
 const getLastSeen = (userId: string): string => {
-  const stored = localStorage.getItem(getLastSeenKey(userId));
-  // Default to epoch if never seen
-  return stored || new Date(0).toISOString();
+  return localStorage.getItem(getLastSeenKey(userId)) || new Date(0).toISOString();
+};
+
+const getChatLastSeen = (userId: string, negId: string): string => {
+  return localStorage.getItem(getChatLastSeenKey(userId, negId)) || getLastSeen(userId);
 };
 
 const setLastSeen = (userId: string) => {
   localStorage.setItem(getLastSeenKey(userId), new Date().toISOString());
 };
 
+const setChatLastSeen = (userId: string, negId: string) => {
+  localStorage.setItem(getChatLastSeenKey(userId, negId), new Date().toISOString());
+};
+
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadByChat, setUnreadByChat] = useState<Record<string, number>>({});
 
   const fetchUnread = useCallback(async () => {
     if (!user) return;
@@ -40,25 +52,41 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
     if (!negs || negs.length === 0) {
       setUnreadCount(0);
+      setUnreadByChat({});
       return;
     }
 
-    const negIds = negs.map((n: any) => n.id);
-    const since = getLastSeen(user.id);
+    const globalSince = getLastSeen(user.id);
+    let totalUnread = 0;
+    const perChat: Record<string, number> = {};
 
-    const { count } = await (supabase as any)
-      .from("negotiation_messages")
-      .select("*", { count: "exact", head: true })
-      .in("negotiation_id", negIds)
-      .neq("sender_id", user.id)
-      .gt("created_at", since);
+    await Promise.all(
+      negs.map(async (n: any) => {
+        const chatSince = getChatLastSeen(user.id, n.id);
+        // Use the more recent of global and per-chat last seen
+        const since = chatSince > globalSince ? chatSince : globalSince;
 
-    setUnreadCount(count || 0);
+        const { count } = await (supabase as any)
+          .from("negotiation_messages")
+          .select("*", { count: "exact", head: true })
+          .eq("negotiation_id", n.id)
+          .neq("sender_id", user.id)
+          .gt("created_at", since);
+
+        const c = count || 0;
+        perChat[n.id] = c;
+        totalUnread += c;
+      })
+    );
+
+    setUnreadByChat(perChat);
+    setUnreadCount(totalUnread);
   }, [user]);
 
   useEffect(() => {
     if (!user) {
       setUnreadCount(0);
+      setUnreadByChat({});
       return;
     }
 
@@ -77,6 +105,10 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
           const msg = payload.new as any;
           if (msg.sender_id !== user.id) {
             setUnreadCount((prev) => prev + 1);
+            setUnreadByChat((prev) => ({
+              ...prev,
+              [msg.negotiation_id]: (prev[msg.negotiation_id] || 0) + 1,
+            }));
           }
         }
       )
@@ -91,10 +123,21 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     if (!user) return;
     setLastSeen(user.id);
     setUnreadCount(0);
+    setUnreadByChat({});
+  }, [user]);
+
+  const markChatAsSeen = useCallback((negotiationId: string) => {
+    if (!user) return;
+    setChatLastSeen(user.id, negotiationId);
+    setUnreadByChat((prev) => {
+      const chatCount = prev[negotiationId] || 0;
+      setUnreadCount((total) => Math.max(0, total - chatCount));
+      return { ...prev, [negotiationId]: 0 };
+    });
   }, [user]);
 
   return (
-    <NotificationContext.Provider value={{ unreadCount, markAsSeen }}>
+    <NotificationContext.Provider value={{ unreadCount, unreadByChat, markAsSeen, markChatAsSeen }}>
       {children}
     </NotificationContext.Provider>
   );
