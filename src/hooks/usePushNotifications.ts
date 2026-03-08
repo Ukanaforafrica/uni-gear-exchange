@@ -52,8 +52,7 @@ export function usePushNotifications() {
           return;
         }
 
-        // Convert base64url to Uint8Array
-        const applicationServerKey = urlBase64ToUint8Array(vapidKey);
+        const applicationServerKey = urlBase64ToUint8Array(vapidKey).buffer as ArrayBuffer;
 
         subscription = await registration.pushManager.subscribe({
           userVisibleOnly: true,
