@@ -279,8 +279,16 @@ const NegotiationChat = ({
         <DialogHeader className="p-4 pb-2 border-b border-border">
           <div className="flex items-center justify-between">
             <DialogTitle className="flex items-center gap-2 text-base">
-              <MessageCircle className="w-4 h-4 text-primary" />
-              <span className="truncate">{itemTitle}</span>
+              <Avatar className="w-8 h-8 shrink-0">
+                {resolvedAvatar ? <AvatarImage src={resolvedAvatar} alt={otherUserName} /> : null}
+                <AvatarFallback className="text-xs bg-accent text-accent-foreground">
+                  {otherUserName.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col min-w-0">
+                <span className="truncate text-sm font-semibold">{itemTitle}</span>
+                <span className="text-xs text-muted-foreground font-normal">with {otherUserName}</span>
+              </div>
             </DialogTitle>
             {negotiation && (
               <MeetupProposal
@@ -293,7 +301,6 @@ const NegotiationChat = ({
               />
             )}
           </div>
-          <p className="text-xs text-muted-foreground">Negotiating with {otherUserName}</p>
         </DialogHeader>
 
         {/* Messages */}
