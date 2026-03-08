@@ -132,7 +132,31 @@ const Profile = () => {
     setLoadingDeals(false);
   };
 
-  const handleSaveProfile = async () => {
+  const fetchReviews = async () => {
+    if (!user) return;
+    const { data } = await (supabase as any)
+      .from("reviews")
+      .select("*")
+      .eq("reviewee_id", user.id)
+      .order("created_at", { ascending: false });
+
+    if (data && data.length > 0) {
+      // Fetch reviewer names
+      const enriched: Review[] = await Promise.all(
+        data.map(async (r: any) => {
+          const { data: prof } = await (supabase as any).from("profiles").select("full_name").eq("id", r.reviewer_id).single();
+          return { ...r, reviewer_name: prof?.full_name || "Anonymous" };
+        })
+      );
+      setReviews(enriched);
+      const avg = enriched.reduce((sum, r) => sum + r.rating, 0) / enriched.length;
+      setAvgRating(Math.round(avg * 10) / 10);
+    } else {
+      setReviews([]);
+      setAvgRating(0);
+    }
+  };
+
     if (!user) return;
     setSaving(true);
     const { error } = await (supabase as any)
