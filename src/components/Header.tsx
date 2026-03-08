@@ -33,10 +33,10 @@ const Header = () => {
             {user ? (
               <>
                 <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
-                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={markAsSeen>
+                <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1" onClick={markAsSeen}>
                   <MessageCircle className="w-4 h-4" />Negotiations
                 </Link>
-                <Link to="/negotiations" className="relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all" onClick={cmarkAsSeen aria-label="Notifications">
+                <Link to="/negotiations" className="relative p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all" onClick={markAsSeen} aria-label="Notifications">
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[11px] font-bold leading-none px-1 shadow-sm animate-in zoom-in-50 duration-200">
