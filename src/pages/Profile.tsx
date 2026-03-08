@@ -444,6 +444,32 @@ const Profile = () => {
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
+                    <p className="font-medium text-foreground text-sm">Email Notifications</p>
+                    <p className="text-xs text-muted-foreground">Receive deal updates and alerts via email</p>
+                  </div>
+                  <Switch
+                    checked={emailEnabled}
+                    disabled={savingEmail}
+                    onCheckedChange={async (checked) => {
+                      if (!user) return;
+                      setSavingEmail(true);
+                      setEmailEnabled(checked);
+                      const { error } = await (supabase as any)
+                        .from("profiles")
+                        .update({ email_notifications: checked })
+                        .eq("id", user.id);
+                      if (error) {
+                        setEmailEnabled(!checked);
+                        toast({ title: "Error", description: "Failed to update preference.", variant: "destructive" });
+                      } else {
+                        toast({ title: checked ? "Email notifications enabled" : "Email notifications disabled" });
+                      }
+                      setSavingEmail(false);
+                    }}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div>
                     <p className="font-medium text-foreground text-sm">Push Notifications</p>
                     <p className="text-xs text-muted-foreground">Receive alerts when the app is closed</p>
                   </div>
@@ -451,7 +477,7 @@ const Profile = () => {
                 </div>
                 <div className="rounded-lg border border-border p-4 bg-muted/30">
                   <p className="text-sm text-muted-foreground">
-                    Push notifications alert you about new messages, meetup proposals, and deal updates even when you're not using the app.
+                    Notifications alert you about new messages, meetup proposals, and deal updates even when you're not using the app.
                   </p>
                 </div>
               </CardContent>
