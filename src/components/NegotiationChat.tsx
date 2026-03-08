@@ -31,6 +31,7 @@ const NegotiationChat = ({
   negotiationId,
   itemTitle,
   otherUserName,
+  otherUserAvatar,
 }: NegotiationChatProps) => {
   const { user } = useAuth();
   const { toast } = useToast();
