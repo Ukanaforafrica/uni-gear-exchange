@@ -57,7 +57,7 @@ const RequestItem = () => {
     }
     setLoading(true);
 
-    const { error } = await supabase.from("item_requests").insert({
+    const { error } = await (supabase as any).from("item_requests").insert({
       user_id: user.id,
       title,
       description,

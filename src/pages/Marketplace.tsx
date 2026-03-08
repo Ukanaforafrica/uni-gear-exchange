@@ -16,7 +16,7 @@ const Marketplace = () => {
 
   useEffect(() => {
     const fetchRequests = async () => {
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("item_requests")
         .select("*")
         .order("created_at", { ascending: false });
