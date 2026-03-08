@@ -165,6 +165,7 @@ const Negotiations = () => {
     setActiveChatId(neg.id);
     setActiveChatTitle(neg.itemTitle);
     setActiveChatUser(neg.otherUserName);
+    setActiveChatAvatar(neg.otherUserAvatar || "");
     markChatAsSeen(neg.id);
   };
 
