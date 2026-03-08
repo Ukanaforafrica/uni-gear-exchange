@@ -68,6 +68,33 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
     };
   }, [negotiationId]);
 
+  // Request browser notification permission on mount
+  useEffect(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  const sendBrowserNotification = (title: string, body: string) => {
+    // Always show toast
+    toast({ title, description: body });
+
+    // Also send browser notification if permitted
+    if ("Notification" in window && Notification.permission === "granted") {
+      try {
+        const options: NotificationOptions & { renotify?: boolean } = {
+          body,
+          icon: "/favicon.ico",
+          tag: `meetup-${negotiationId}`,
+          renotify: true,
+        };
+        new Notification(title, options as NotificationOptions);
+      } catch {
+        // Fallback: notification API may not work in all contexts
+      }
+    }
+  };
+
   // Reminder logic
   useEffect(() => {
     if (!proposal || proposal.status !== "accepted") return;
@@ -83,20 +110,24 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
         setShowCloseDeal(true);
         setReminderActive(false);
         if (reminderIntervalRef.current) clearInterval(reminderIntervalRef.current);
+        sendBrowserNotification(
+          "🤝 It's meetup time!",
+          `Head to ${proposal.meetup_location} now to complete your deal.`
+        );
         return;
       }
 
       if (diffMin <= 60) {
         setReminderActive(true);
-        toast({
-          title: "⏰ Meetup Reminder",
-          description: `Your meetup is in ${Math.ceil(diffMin)} minute${Math.ceil(diffMin) !== 1 ? "s" : ""}! Location: ${proposal.meetup_location}`,
-        });
+        sendBrowserNotification(
+          "⏰ Meetup Reminder",
+          `Your meetup is in ${Math.ceil(diffMin)} minute${Math.ceil(diffMin) !== 1 ? "s" : ""}! Location: ${proposal.meetup_location}`
+        );
       }
     };
 
     checkReminder();
-    reminderIntervalRef.current = setInterval(checkReminder, 20 * 60 * 1000); // every 20 min
+    reminderIntervalRef.current = setInterval(checkReminder, 20 * 60 * 1000);
 
     return () => {
       if (reminderIntervalRef.current) clearInterval(reminderIntervalRef.current);
