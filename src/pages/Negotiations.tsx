@@ -20,11 +20,74 @@ interface NegotiationWithDetails extends Negotiation {
 
 const Negotiations = () => {
   const { user, profile } = useAuth();
+  const { toast } = useToast();
   const [negotiations, setNegotiations] = useState<NegotiationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
   const [activeChatTitle, setActiveChatTitle] = useState("");
   const [activeChatUser, setActiveChatUser] = useState("");
+  const activeChatIdRef = useRef<string | null>(null);
+
+  // Keep ref in sync so realtime callback sees latest value
+  useEffect(() => {
+    activeChatIdRef.current = activeChatId;
+  }, [activeChatId]);
+
+  // Listen for new messages across all negotiations
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel("global-new-messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "negotiation_messages",
+        },
+        async (payload) => {
+          const msg = payload.new as NegotiationMessage;
+          // Don't notify for own messages or if the chat is already open
+          if (msg.sender_id === user.id) return;
+          if (activeChatIdRef.current === msg.negotiation_id) return;
+
+          // Get sender name
+          const { data: senderProfile } = await (supabase as any)
+            .from("profiles")
+            .select("full_name")
+            .eq("id", msg.sender_id)
+            .single();
+
+          const senderName = senderProfile?.full_name || "Someone";
+          const preview = msg.message_type === "text"
+            ? msg.message.slice(0, 60) + (msg.message.length > 60 ? "…" : "")
+            : msg.message_type === "image" ? "📷 Sent an image"
+            : msg.message_type === "voice" ? "🎙️ Sent a voice note"
+            : msg.message_type === "video" ? "🎥 Sent a video"
+            : "New message";
+
+          toast({
+            title: `💬 ${senderName}`,
+            description: preview || "New message",
+          });
+
+          // Update the negotiation list to reflect new message
+          setNegotiations((prev) =>
+            prev.map((n) =>
+              n.id === msg.negotiation_id
+                ? { ...n, lastMessage: preview, messageCount: n.messageCount + 1 }
+                : n
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, toast]);
 
   useEffect(() => {
     if (!user) return;
