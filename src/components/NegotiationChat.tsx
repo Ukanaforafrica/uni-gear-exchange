@@ -22,6 +22,7 @@ interface NegotiationChatProps {
   negotiationId: string | null;
   itemTitle: string;
   otherUserName: string;
+  otherUserAvatar?: string;
 }
 
 const NegotiationChat = ({
