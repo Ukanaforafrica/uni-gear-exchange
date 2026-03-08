@@ -32,6 +32,7 @@ const Header = () => {
             <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
             <Link to="/request" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Request Item</Link>
             <Link to="/sell" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Sell Item</Link>
+            {user && <Link to="/negotiations" className="text-muted-foreground hover:text-foreground transition-colors font-medium flex items-center gap-1"><MessageCircle className="w-4 h-4" />Negotiations</Link>}
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
