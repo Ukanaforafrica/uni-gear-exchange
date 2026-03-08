@@ -316,7 +316,7 @@ const NegotiationChat = ({
               <div key={msg.id} className={`flex items-end gap-2 ${isMine ? "justify-end" : "justify-start"}`}>
                 {!isMine && (
                   <Avatar className="w-7 h-7 shrink-0">
-                    {otherUserAvatar ? <AvatarImage src={otherUserAvatar} alt={otherUserName} /> : null}
+                    {resolvedAvatar ? <AvatarImage src={resolvedAvatar} alt={otherUserName} /> : null}
                     <AvatarFallback className="text-[10px] bg-accent text-accent-foreground">
                       {otherUserName.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
