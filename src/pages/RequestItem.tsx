@@ -91,15 +91,19 @@ const RequestItem = () => {
     }
     setLoading(true);
 
-    const { error } = await (supabase as any).from("item_requests").insert({
-      user_id: user.id,
-      title,
-      description,
-      category,
-      budget_min: budgetMin ? parseInt(budgetMin) : 0,
-      budget_max: budgetMax ? parseInt(budgetMax) : 0,
-      university: profile.university,
-    } as any);
+    try {
+      const photoUrls = photos.length > 0 ? await uploadPhotos() : [];
+
+      const { error } = await (supabase as any).from("item_requests").insert({
+        user_id: user.id,
+        title,
+        description,
+        category,
+        budget_min: budgetMin ? parseInt(budgetMin) : 0,
+        budget_max: budgetMax ? parseInt(budgetMax) : 0,
+        university: profile.university,
+        photos: photoUrls,
+      } as any);
 
     setLoading(false);
 
