@@ -16,8 +16,8 @@
     --popover: 45 35% 99%;
     --popover-foreground: 30 10% 12%;
 
-    /* Warm amber/orange - marketplace energy */
-    --primary: 28 90% 52%;
+    /* Vibrant blue - marketplace energy */
+    --primary: 200 97% 48%;
     --primary-foreground: 0 0% 100%;
 
     /* Deep forest green - Nigerian identity */
@@ -27,35 +27,35 @@
     --muted: 40 20% 92%;
     --muted-foreground: 30 10% 45%;
 
-    /* Warm accent */
-    --accent: 35 85% 58%;
-    --accent-foreground: 30 10% 12%;
+    /* Blue accent */
+    --accent: 200 90% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 40 25% 88%;
     --input: 40 25% 88%;
-    --ring: 28 90% 52%;
+    --ring: 200 97% 48%;
 
     --radius: 0.75rem;
 
     /* Custom tokens */
-    --gradient-hero: linear-gradient(135deg, hsl(28 90% 52%) 0%, hsl(35 85% 58%) 50%, hsl(145 45% 22%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(200 97% 48%) 0%, hsl(200 90% 55%) 50%, hsl(145 45% 22%) 100%);
     --gradient-warm: linear-gradient(135deg, hsl(45 35% 99%) 0%, hsl(40 30% 95%) 100%);
     --gradient-card: linear-gradient(180deg, hsl(45 35% 99%) 0%, hsl(40 25% 96%) 100%);
     --shadow-soft: 0 4px 20px -4px hsl(30 10% 12% / 0.08);
     --shadow-elevated: 0 12px 40px -8px hsl(30 10% 12% / 0.15);
-    --shadow-glow: 0 0 30px hsl(28 90% 52% / 0.25);
+    --shadow-glow: 0 0 30px hsl(200 97% 48% / 0.25);
 
     --sidebar-background: 45 30% 97%;
     --sidebar-foreground: 30 10% 25%;
-    --sidebar-primary: 28 90% 52%;
+    --sidebar-primary: 200 97% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 40 20% 92%;
     --sidebar-accent-foreground: 30 10% 25%;
     --sidebar-border: 40 25% 88%;
-    --sidebar-ring: 28 90% 52%;
+    --sidebar-ring: 200 97% 48%;
   }
 
   .dark {
@@ -68,8 +68,8 @@
     --popover: 30 12% 12%;
     --popover-foreground: 45 25% 95%;
 
-    --primary: 28 90% 55%;
-    --primary-foreground: 30 10% 8%;
+    --primary: 200 97% 52%;
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 145 40% 35%;
     --secondary-foreground: 0 0% 100%;
@@ -77,24 +77,24 @@
     --muted: 30 10% 18%;
     --muted-foreground: 40 15% 60%;
 
-    --accent: 35 80% 55%;
-    --accent-foreground: 30 10% 8%;
+    --accent: 200 90% 58%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 45%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 30 10% 20%;
     --input: 30 10% 20%;
-    --ring: 28 90% 55%;
+    --ring: 200 97% 52%;
 
     --sidebar-background: 30 12% 10%;
     --sidebar-foreground: 45 25% 90%;
-    --sidebar-primary: 28 90% 55%;
-    --sidebar-primary-foreground: 30 10% 8%;
+    --sidebar-primary: 200 97% 52%;
+    --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 30 10% 18%;
     --sidebar-accent-foreground: 45 25% 90%;
     --sidebar-border: 30 10% 20%;
-    --sidebar-ring: 28 90% 55%;
+    --sidebar-ring: 200 97% 52%;
   }
 }
 
