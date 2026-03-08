@@ -50,6 +50,7 @@ const Profile = () => {
       setFullName(profile.full_name);
       setPhone(profile.phone);
       setUniversity(profile.university);
+      setEmailEnabled((profile as any).email_notifications ?? true);
     }
   }, [profile]);
 
