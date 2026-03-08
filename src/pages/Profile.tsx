@@ -314,6 +314,13 @@ const Profile = () => {
             <h1 className="text-2xl font-bold text-foreground">{profile.full_name || "Your Profile"}</h1>
             <p className="text-muted-foreground text-sm">📍 {UNIVERSITIES.find(u => u.value === profile.university)?.label || profile.university}</p>
             <p className="text-muted-foreground text-xs">Joined {formatDate(profile.created_at)}</p>
+            {reviews.length > 0 && (
+              <div className="flex items-center gap-1 mt-1">
+                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                <span className="text-sm font-semibold text-foreground">{avgRating}</span>
+                <span className="text-xs text-muted-foreground">({reviews.length} review{reviews.length !== 1 ? "s" : ""})</span>
+              </div>
+            )}
           </div>
         </div>
 
