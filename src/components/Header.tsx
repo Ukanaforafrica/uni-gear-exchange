@@ -31,6 +31,7 @@ const Header = () => {
             <Link to="/" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Home</Link>
             <Link to="/marketplace" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Marketplace</Link>
             <Link to="/request" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Request Item</Link>
+            <Link to="/sell" className="text-muted-foreground hover:text-foreground transition-colors font-medium">Sell Item</Link>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
