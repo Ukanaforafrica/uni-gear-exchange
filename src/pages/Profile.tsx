@@ -14,9 +14,20 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { User, Package, History, Bell, Camera, Loader2, Edit2, Check, X, ExternalLink } from "lucide-react";
+import { User, Package, History, Bell, Camera, Loader2, Edit2, Check, X, Star } from "lucide-react";
 import { UNIVERSITIES, type NigerianUniversity } from "@/lib/types";
 import type { Item, ItemRequest, Negotiation } from "@/lib/types";
+
+interface Review {
+  id: string;
+  negotiation_id: string;
+  reviewer_id: string;
+  reviewee_id: string;
+  rating: number;
+  comment: string;
+  created_at: string;
+  reviewer_name?: string;
+}
 
 const Profile = () => {
   const { user, profile, loading: authLoading, refreshProfile } = useAuth();
