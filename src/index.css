@@ -27,9 +27,9 @@
     --muted: 40 20% 92%;
     --muted-foreground: 30 10% 45%;
 
-    /* Warm accent */
-    --accent: 35 85% 58%;
-    --accent-foreground: 30 10% 12%;
+    /* Blue accent */
+    --accent: 200 90% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
