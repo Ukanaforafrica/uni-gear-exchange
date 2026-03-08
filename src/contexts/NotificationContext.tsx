@@ -129,6 +129,46 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
           }
         }
       )
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "meetup_proposals",
+        },
+        (payload) => {
+          const proposal = payload.new as any;
+          if (proposal.proposed_by !== user.id) {
+            setUnreadCount((prev) => prev + 1);
+            setUnreadByChat((prev) => ({
+              ...prev,
+              [proposal.negotiation_id]: (prev[proposal.negotiation_id] || 0) + 1,
+            }));
+          }
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "meetup_proposals",
+        },
+        (payload) => {
+          const proposal = payload.new as any;
+          const old = payload.old as any;
+          // Notify if the other party just accepted
+          const buyerJustAccepted = proposal.buyer_accepted && !old.buyer_accepted;
+          const sellerJustAccepted = proposal.seller_accepted && !old.seller_accepted;
+          if ((buyerJustAccepted || sellerJustAccepted) && proposal.proposed_by !== user.id) {
+            setUnreadCount((prev) => prev + 1);
+            setUnreadByChat((prev) => ({
+              ...prev,
+              [proposal.negotiation_id]: (prev[proposal.negotiation_id] || 0) + 1,
+            }));
+          }
+        }
+      )
       .subscribe();
 
     return () => {
