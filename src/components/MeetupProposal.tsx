@@ -46,6 +46,7 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId, itemId, itemRequestI
   const [editing, setEditing] = useState(false);
   const reminderIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [reminderActive, setReminderActive] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const isSeller = user?.id === sellerId;
   const isBuyer = user?.id === buyerId;
