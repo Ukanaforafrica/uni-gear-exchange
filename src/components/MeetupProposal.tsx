@@ -279,7 +279,7 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
             <span>{proposal.meetup_location}</span>
           </div>
           {reminderActive && (
-            <div className="flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 animate-pulse">
+            <div className="flex items-center gap-1.5 text-xs text-accent-foreground animate-pulse">
               <Bell className="w-3 h-3" />
               Meetup is coming up soon!
             </div>
