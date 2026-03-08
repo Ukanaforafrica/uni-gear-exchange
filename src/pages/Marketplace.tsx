@@ -32,8 +32,11 @@ const Marketplace = () => {
         (supabase as any).from("item_requests").select("*").order("created_at", { ascending: false }),
         (supabase as any).from("items").select("*").order("created_at", { ascending: false }),
       ]);
-      setRequests((reqRes.data as ItemRequest[]) || []);
-      setItems((itemRes.data as Item[]) || []);
+      const allItems = (itemRes.data as Item[]) || [];
+      const allRequests = (reqRes.data as ItemRequest[]) || [];
+      // Show active items to everyone, but also show sold/fulfilled items to the owner
+      setItems(allItems.filter(i => i.status === "active" || i.user_id === user?.id));
+      setRequests(allRequests.filter(r => r.status === "active" || r.user_id === user?.id));
       setLoading(false);
     };
     fetchData();
