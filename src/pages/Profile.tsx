@@ -164,6 +164,7 @@ const Profile = () => {
     const sub = await reg.pushManager.getSubscription();
 
     if (sub) {
+      // Unsubscribe
       await sub.unsubscribe();
       if (user) {
         await (supabase as any).from("push_subscriptions").delete().eq("user_id", user.id);
@@ -171,7 +172,48 @@ const Profile = () => {
       setPushEnabled(false);
       toast({ title: "Push notifications disabled" });
     } else {
-      toast({ title: "Re-enable", description: "Please refresh the page to re-subscribe to push notifications." });
+      // Subscribe
+      try {
+        const permission = await Notification.requestPermission();
+        if (permission !== "granted") {
+          toast({ title: "Permission denied", description: "Please allow notifications in your browser settings.", variant: "destructive" });
+          return;
+        }
+
+        // Fetch VAPID key
+        const vapidRes = await supabase.functions.invoke("push-notifications", { body: { action: "vapid-key" } });
+        const publicKey = vapidRes.data?.publicKey;
+        if (!publicKey) {
+          toast({ title: "Error", description: "Could not get push key.", variant: "destructive" });
+          return;
+        }
+
+        // Convert base64url to Uint8Array
+        const padding = "=".repeat((4 - (publicKey.length % 4)) % 4);
+        const base64 = (publicKey + padding).replace(/-/g, "+").replace(/_/g, "/");
+        const rawData = atob(base64);
+        const applicationServerKey = new Uint8Array(rawData.length);
+        for (let i = 0; i < rawData.length; i++) applicationServerKey[i] = rawData.charCodeAt(i);
+
+        const newSub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey });
+        const subJson = newSub.toJSON();
+
+        // Save to backend
+        const { data: { session } } = await supabase.auth.getSession();
+        await supabase.functions.invoke("push-notifications", {
+          body: {
+            action: "subscribe",
+            subscription: { endpoint: subJson.endpoint, keys: subJson.keys },
+          },
+          headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
+        });
+
+        setPushEnabled(true);
+        toast({ title: "Push notifications enabled!" });
+      } catch (err: any) {
+        console.error("Push subscribe error:", err);
+        toast({ title: "Error", description: err.message || "Failed to enable push notifications.", variant: "destructive" });
+      }
     }
   };
 
