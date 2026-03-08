@@ -22,6 +22,7 @@ interface NegotiationWithDetails extends Negotiation {
 const Negotiations = () => {
   const { user, profile } = useAuth();
   const { toast } = useToast();
+  const { unreadByChat, markChatAsSeen } = useNotifications();
   const [negotiations, setNegotiations] = useState<NegotiationWithDetails[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeChatId, setActiveChatId] = useState<string | null>(null);
