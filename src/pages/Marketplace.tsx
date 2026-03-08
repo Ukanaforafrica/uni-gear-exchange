@@ -7,14 +7,24 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Clock, Tag, ShoppingBag, Camera } from "lucide-react";
+import { Search, Plus, Clock, Tag, ShoppingBag, Camera, MessageCircle } from "lucide-react";
+import NegotiationChat from "@/components/NegotiationChat";
+import { useNegotiation } from "@/hooks/useNegotiation";
 import type { ItemRequest, Item } from "@/lib/types";
 
 const Marketplace = () => {
-  const { profile } = useAuth();
+  const { user, profile } = useAuth();
   const [requests, setRequests] = useState<ItemRequest[]>([]);
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
+  const {
+    chatOpen,
+    setChatOpen,
+    activeNegotiationId,
+    chatTitle,
+    chatOtherUser,
+    startNegotiation,
+  } = useNegotiation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,8 +52,7 @@ const Marketplace = () => {
 
   const daysLeft = (expiresAt: string) => {
     const diff = new Date(expiresAt).getTime() - Date.now();
-    const days = Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-    return days;
+    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
   };
 
   const SkeletonCards = () => (
@@ -114,17 +123,13 @@ const Marketplace = () => {
                   <h2 className="font-display text-xl font-bold text-foreground mb-2">No items listed yet</h2>
                   <p className="text-muted-foreground mb-6">Be the first to sell something on your campus!</p>
                   <Button asChild>
-                    <Link to="/sell">
-                      <Plus className="w-4 h-4" />
-                      List an Item
-                    </Link>
+                    <Link to="/sell"><Plus className="w-4 h-4" />List an Item</Link>
                   </Button>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {items.map((item) => (
                     <div key={item.id} className="bg-card rounded-2xl shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                      {/* Photo */}
                       <div className="aspect-[4/3] bg-muted relative">
                         {item.photos.length > 0 ? (
                           <img src={item.photos[0]} alt={item.title} className="w-full h-full object-cover" />
@@ -144,23 +149,35 @@ const Marketplace = () => {
                           </Badge>
                         </div>
                       </div>
-
-                      {/* Info */}
                       <div className="p-4">
                         <h3 className="font-display font-bold text-foreground text-lg mb-1 line-clamp-1">{item.title}</h3>
                         {item.defects && (
                           <p className="text-xs text-muted-foreground mb-2 line-clamp-1">⚠️ {item.defects}</p>
                         )}
                         <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-primary">
-                            ₦{item.price.toLocaleString()}
-                          </span>
-                          {item.negotiable && (
-                            <Badge variant="outline" className="text-xs">Negotiable</Badge>
-                          )}
+                          <span className="text-lg font-bold text-primary">₦{item.price.toLocaleString()}</span>
+                          {item.negotiable && <Badge variant="outline" className="text-xs">Negotiable</Badge>}
                         </div>
                         {item.usage_duration && (
                           <p className="text-xs text-muted-foreground mt-1">Used: {item.usage_duration}</p>
+                        )}
+                        {user && item.user_id !== user.id && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="w-full mt-3 gap-1.5"
+                            onClick={() =>
+                              startNegotiation({
+                                itemId: item.id,
+                                itemType: "item",
+                                sellerId: item.user_id,
+                                itemTitle: item.title,
+                              })
+                            }
+                          >
+                            <MessageCircle className="w-3.5 h-3.5" />
+                            Negotiate
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -178,10 +195,7 @@ const Marketplace = () => {
                   <h2 className="font-display text-xl font-bold text-foreground mb-2">No requests yet</h2>
                   <p className="text-muted-foreground mb-6">Be the first to post a request on your campus!</p>
                   <Button asChild>
-                    <Link to="/request">
-                      <Plus className="w-4 h-4" />
-                      Post a Request
-                    </Link>
+                    <Link to="/request"><Plus className="w-4 h-4" />Post a Request</Link>
                   </Button>
                 </div>
               ) : (
@@ -207,6 +221,24 @@ const Marketplace = () => {
                           ₦{req.budget_min.toLocaleString()} — ₦{req.budget_max.toLocaleString()}
                         </div>
                       )}
+                      {user && req.user_id !== user.id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full mt-3 gap-1.5"
+                          onClick={() =>
+                            startNegotiation({
+                              itemRequestId: req.id,
+                              itemType: "request",
+                              sellerId: req.user_id,
+                              itemTitle: req.title,
+                            })
+                          }
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          I Have This
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -216,6 +248,14 @@ const Marketplace = () => {
         </div>
       </main>
       <Footer />
+
+      <NegotiationChat
+        open={chatOpen}
+        onOpenChange={setChatOpen}
+        negotiationId={activeNegotiationId}
+        itemTitle={chatTitle}
+        otherUserName={chatOtherUser}
+      />
     </div>
   );
 };

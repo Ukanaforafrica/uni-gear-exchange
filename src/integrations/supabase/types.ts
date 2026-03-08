@@ -122,6 +122,77 @@ export type Database = {
         }
         Relationships: []
       }
+      negotiation_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          negotiation_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          negotiation_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          negotiation_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negotiation_messages_negotiation_id_fkey"
+            columns: ["negotiation_id"]
+            isOneToOne: false
+            referencedRelation: "negotiations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      negotiations: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          id: string
+          item_id: string | null
+          item_request_id: string | null
+          item_type: string
+          paid: boolean
+          seller_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_request_id?: string | null
+          item_type?: string
+          paid?: boolean
+          seller_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          id?: string
+          item_id?: string | null
+          item_request_id?: string | null
+          item_type?: string
+          paid?: boolean
+          seller_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string
