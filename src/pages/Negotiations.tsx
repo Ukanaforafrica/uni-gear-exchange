@@ -161,6 +161,7 @@ const Negotiations = () => {
     setActiveChatId(neg.id);
     setActiveChatTitle(neg.itemTitle);
     setActiveChatUser(neg.otherUserName);
+    markChatAsSeen(neg.id);
   };
 
   const formatDate = (dateStr: string) => {
