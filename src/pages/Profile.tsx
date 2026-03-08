@@ -83,6 +83,7 @@ const Profile = () => {
 
     fetchListings();
     fetchDeals();
+    fetchReviews();
   }, [user]);
 
   const fetchListings = async () => {
