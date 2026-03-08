@@ -1,0 +1,1 @@
+ALTER TABLE public.item_requests ADD COLUMN photos text[] NOT NULL DEFAULT '{}'::text[];

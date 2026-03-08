@@ -22,6 +22,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          photos: string[]
           status: string
           title: string
           university: string
@@ -35,6 +36,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          photos?: string[]
           status?: string
           title: string
           university: string
@@ -48,6 +50,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          photos?: string[]
           status?: string
           title?: string
           university?: string
