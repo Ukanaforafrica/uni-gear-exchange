@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import RequestItem from "./pages/RequestItem";
+import ListItem from "./pages/ListItem";
 import Marketplace from "./pages/Marketplace";
 import NotFound from "./pages/NotFound";
 
