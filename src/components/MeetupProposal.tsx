@@ -242,8 +242,8 @@ const MeetupProposal = ({ negotiationId, buyerId, sellerId }: MeetupProposalProp
             <span>{proposal.meetup_location}</span>
           </div>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            {proposal.seller_accepted && <span className="text-green-600">✓ Seller accepted</span>}
-            {proposal.buyer_accepted && <span className="text-green-600">✓ Buyer accepted</span>}
+            {proposal.seller_accepted && <span className="text-primary">✓ Seller accepted</span>}
+            {proposal.buyer_accepted && <span className="text-primary">✓ Buyer accepted</span>}
             {!proposal.seller_accepted && <span>⏳ Seller pending</span>}
             {!proposal.buyer_accepted && <span>⏳ Buyer pending</span>}
           </div>
