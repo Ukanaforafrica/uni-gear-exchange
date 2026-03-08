@@ -42,6 +42,7 @@ const NegotiationChat = ({
   const [negotiation, setNegotiation] = useState<Negotiation | null>(null);
   const [recording, setRecording] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [resolvedAvatar, setResolvedAvatar] = useState(otherUserAvatar || "");
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
