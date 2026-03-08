@@ -97,7 +97,7 @@ const Header = () => {
                   <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); markAsSeen(); }}>
                     <MessageCircle className="w-4 h-4" />Negotiations
                   </Link>
-                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); clearUnread(); }}>
+                  <Link to="/negotiations" className="text-foreground font-medium py-2 flex items-center gap-2" onClick={() => { setIsMenuOpen(false); markAsSeen(); }}>
                     <div className="relative">
                       <Bell className="w-4 h-4" />
                       {unreadCount > 0 && (
