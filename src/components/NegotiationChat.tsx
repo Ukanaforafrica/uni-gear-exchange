@@ -251,6 +251,9 @@ const NegotiationChat = ({
                 negotiationId={negotiation.id}
                 buyerId={negotiation.buyer_id}
                 sellerId={negotiation.seller_id}
+                itemId={negotiation.item_id}
+                itemRequestId={negotiation.item_request_id}
+                itemType={negotiation.item_type as 'item' | 'request'}
               />
             )}
           </div>
