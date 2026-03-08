@@ -57,7 +57,16 @@ const NegotiationChat = ({
         (supabase as any).from("negotiations").select("*").eq("id", negotiationId).single(),
         (supabase as any).from("negotiation_messages").select("*").eq("negotiation_id", negotiationId).order("created_at", { ascending: true }),
       ]);
-      if (negRes.data) setNegotiation(negRes.data as Negotiation);
+      if (negRes.data) {
+        setNegotiation(negRes.data as Negotiation);
+        // Fetch other user's avatar if not provided via props
+        if (!otherUserAvatar && user) {
+          const neg = negRes.data as Negotiation;
+          const otherId = user.id === neg.buyer_id ? neg.seller_id : neg.buyer_id;
+          const { data: prof } = await (supabase as any).from("profiles").select("avatar_url").eq("id", otherId).single();
+          if (prof?.avatar_url) setResolvedAvatar(prof.avatar_url);
+        }
+      }
       if (msgRes.data) setMessages(msgRes.data as NegotiationMessage[]);
     };
     fetchData();
