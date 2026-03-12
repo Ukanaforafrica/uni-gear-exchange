@@ -11,7 +11,7 @@ const featuredItems = [
     price: "₦450,000",
     condition: "Like New",
     university: "UNILAG",
-    image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/103b276e-1a4f-4fea-a44c-85a983e46948.jpg",
     daysLeft: 5,
   },
   {
