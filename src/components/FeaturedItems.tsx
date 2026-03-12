@@ -52,11 +52,11 @@ const featuredItems = [
   },
   {
     id: 6,
-    title: "Mini Refrigerator",
+    title: "Student Mattress",
     price: "₦55,000",
     condition: "Good",
     university: "EKSU",
-    image: "https://images.unsplash.com/photo-1571175443880-49e1d25b2bc5?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/63069008-a322-41ea-bfdc-1a18735a1aee.jpg",
     daysLeft: 7,
   },
 ];
