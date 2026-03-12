@@ -16,7 +16,7 @@ const featuredItems = [
   },
   {
     id: 2,
-    title: "Engineering Textbooks Bundle",
+    title: "Electric Standing Fan",
     price: "₦25,000",
     condition: "Good",
     university: "UNIBEN",
