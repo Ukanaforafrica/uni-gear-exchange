@@ -38,7 +38,7 @@ const featuredItems = [
     price: "₦180,000",
     condition: "Like New",
     university: "OOU",
-    image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/65066181-e698-4a14-a6bc-f2cb3d5de1d9.jpg",
     daysLeft: 2,
   },
   {
