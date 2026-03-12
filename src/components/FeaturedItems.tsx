@@ -20,7 +20,7 @@ const featuredItems = [
     price: "₦25,000",
     condition: "Good",
     university: "UNIBEN",
-    image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/9ce183c2-6cad-410c-b2cc-681a0dc1ccac.jpg",
     daysLeft: 3,
   },
   {
