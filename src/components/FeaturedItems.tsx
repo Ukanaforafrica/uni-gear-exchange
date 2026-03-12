@@ -43,11 +43,11 @@ const featuredItems = [
   },
   {
     id: 5,
-    title: "Medical Anatomy Models",
+    title: "Gas Cylinder",
     price: "₦45,000",
     condition: "Good",
     university: "UNIABUJA",
-    image: "https://images.unsplash.com/photo-1559757175-0eb30cd8c063?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/26c4e1da-e29b-475a-89ae-4c5d8b819212.jpg",
     daysLeft: 4,
   },
   {
