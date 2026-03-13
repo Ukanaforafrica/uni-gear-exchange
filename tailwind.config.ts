@@ -16,6 +16,15 @@ export default {
       fontFamily: {
         sans: ['Baloo', 'cursive', 'sans-serif'],
         display: ['Baloo', 'cursive', 'sans-serif'],
+        'baloo-bhai': ['Baloo Bhai', 'cursive', 'sans-serif'],
+        'baloo-bhaijaan': ['Baloo Bhaijaan', 'cursive', 'sans-serif'],
+        'baloo-bhaina': ['Baloo Bhaina', 'cursive', 'sans-serif'],
+        'baloo-chettan': ['Baloo Chettan', 'cursive', 'sans-serif'],
+        'baloo-da': ['Baloo Da', 'cursive', 'sans-serif'],
+        'baloo-paaji': ['Baloo Paaji', 'cursive', 'sans-serif'],
+        'baloo-tamma': ['Baloo Tamma', 'cursive', 'sans-serif'],
+        'baloo-tammudu': ['Baloo Tammudu', 'cursive', 'sans-serif'],
+        'baloo-thambi': ['Baloo Thambi', 'cursive', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
