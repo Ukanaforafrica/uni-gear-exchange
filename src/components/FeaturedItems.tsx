@@ -8,7 +8,7 @@ const featuredItems = [
   {
     id: 1,
     title: "MacBook Air M1 2020",
-    price: "₦450,000",
+    price: "₦320,000",
     condition: "Like New",
     university: "UNILAG",
     image: "/lovable-uploads/103b276e-1a4f-4fea-a44c-85a983e46948.jpg",
@@ -17,7 +17,7 @@ const featuredItems = [
   {
     id: 2,
     title: "Electric Standing Fan",
-    price: "₦25,000",
+    price: "₦13,000",
     condition: "Good",
     university: "UNIBEN",
     image: "/lovable-uploads/9ce183c2-6cad-410c-b2cc-681a0dc1ccac.jpg",
@@ -26,16 +26,16 @@ const featuredItems = [
   {
     id: 3,
     title: "Study Desk with Chair",
-    price: "₦35,000",
+    price: "₦13,000",
     condition: "Fair",
     university: "LASU",
-    image: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=400&h=300&fit=crop",
+    image: "/lovable-uploads/bd8b7b6f-ca66-47a0-b61e-380b10159286.jpg",
     daysLeft: 6,
   },
   {
     id: 4,
     title: "Samsung Galaxy S21",
-    price: "₦180,000",
+    price: "₦110,000",
     condition: "Like New",
     university: "OOU",
     image: "/lovable-uploads/65066181-e698-4a14-a6bc-f2cb3d5de1d9.jpg",
@@ -44,7 +44,7 @@ const featuredItems = [
   {
     id: 5,
     title: "Gas Cylinder",
-    price: "₦45,000",
+    price: "₦11,000",
     condition: "Good",
     university: "UNIABUJA",
     image: "/lovable-uploads/26c4e1da-e29b-475a-89ae-4c5d8b819212.jpg",
@@ -53,7 +53,7 @@ const featuredItems = [
   {
     id: 6,
     title: "Student Mattress",
-    price: "₦55,000",
+    price: "₦17,000",
     condition: "Good",
     university: "EKSU",
     image: "/lovable-uploads/63069008-a322-41ea-bfdc-1a18735a1aee.jpg",
