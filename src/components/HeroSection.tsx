@@ -25,9 +25,9 @@ const HeroSection = () => {
 
           {/* Main Heading */}
           <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            Buy & Sell{" "}
-            <span className="text-gradient">Fairly Used</span>{" "}
-            Items on Campus
+            Sell, request and buy{" "}
+            <span className="text-gradient">anything</span>{" "}
+            around your campus
           </h1>
 
           {/* Subtitle */}
