@@ -31,9 +31,9 @@ const HeroSection = () => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            Connect with fellow students at your university. Find great deals on textbooks, electronics, 
-            furniture, and more — all within your campus community.
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-fade-in" style={{ animationDelay: "0.2s" }}>Don't pay until you see the product with your koro-koro eyes. Schedule time and location of pickup to seal the deal.
+
+
           </p>
 
           {/* CTA Buttons */}
@@ -69,8 +69,8 @@ const HeroSection = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default HeroSection;
