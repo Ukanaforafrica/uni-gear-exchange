@@ -1,0 +1,1 @@
+ALTER TABLE public.item_requests ADD COLUMN video_url text NOT NULL DEFAULT '';
