@@ -7,8 +7,9 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search, Plus, Clock, Tag, ShoppingBag, Camera, MessageCircle } from "lucide-react";
+import { Search, Plus, Clock, Tag, ShoppingBag, MessageCircle } from "lucide-react";
 import NegotiationChat from "@/components/NegotiationChat";
+import MediaCarousel from "@/components/MediaCarousel";
 import { useNegotiation } from "@/hooks/useNegotiation";
 import type { ItemRequest, Item } from "@/lib/types";
 
