@@ -28,8 +28,9 @@ const RequestItem = () => {
   const [budgetMax, setBudgetMax] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -38,13 +39,30 @@ const RequestItem = () => {
     const newPreviews = selected.map((f) => URL.createObjectURL(f));
     setPhotos((prev) => [...prev, ...selected]);
     setPhotoPreviews((prev) => [...prev, ...newPreviews]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removePhoto = (index: number) => {
     URL.revokeObjectURL(photoPreviews[index]);
     setPhotos((prev) => prev.filter((_, i) => i !== index));
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) {
+      toast({ title: "Video must be under 50MB", variant: "destructive" });
+      return;
+    }
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(file);
+    setVideoPreview(URL.createObjectURL(file));
+  };
+
+  const removeVideo = () => {
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(null);
+    setVideoPreview(null);
   };
 
   const uploadPhotos = async (): Promise<string[]> => {
@@ -58,6 +76,16 @@ const RequestItem = () => {
       urls.push(urlData.publicUrl);
     }
     return urls;
+  };
+
+  const uploadVideo = async (): Promise<string> => {
+    if (!video) return "";
+    const ext = video.name.split(".").pop();
+    const path = `${user!.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("item-photos").upload(path, video);
+    if (error) throw error;
+    const { data: urlData } = supabase.storage.from("item-photos").getPublicUrl(path);
+    return urlData.publicUrl;
   };
 
   if (!user || !profile) {
