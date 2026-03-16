@@ -65,22 +65,36 @@ const ListItem = () => {
     const files = Array.from(e.target.files || []);
     const remaining = MAX_PHOTOS - photos.length;
     const selected = files.slice(0, remaining);
-
     if (files.length > remaining) {
       toast({ title: `Maximum ${MAX_PHOTOS} photos allowed`, variant: "destructive" });
     }
-
     const newPreviews = selected.map((file) => URL.createObjectURL(file));
     setPhotos((prev) => [...prev, ...selected]);
     setPhotoPreviews((prev) => [...prev, ...newPreviews]);
-
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removePhoto = (index: number) => {
     URL.revokeObjectURL(photoPreviews[index]);
     setPhotos((prev) => prev.filter((_, i) => i !== index));
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) {
+      toast({ title: "Video must be under 50MB", variant: "destructive" });
+      return;
+    }
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(file);
+    setVideoPreview(URL.createObjectURL(file));
+  };
+
+  const removeVideo = () => {
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(null);
+    setVideoPreview(null);
   };
 
   const uploadPhotos = async (): Promise<string[]> => {
@@ -94,6 +108,16 @@ const ListItem = () => {
       urls.push(data.publicUrl);
     }
     return urls;
+  };
+
+  const uploadVideo = async (): Promise<string> => {
+    if (!video) return "";
+    const ext = video.name.split(".").pop();
+    const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("item-photos").upload(path, video);
+    if (error) throw error;
+    const { data } = supabase.storage.from("item-photos").getPublicUrl(path);
+    return data.publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
