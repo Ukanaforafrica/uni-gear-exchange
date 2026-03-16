@@ -324,54 +324,22 @@ const ListItem = () => {
                 </div>
               </div>
 
-              {/* Section 3: Photos */}
+              {/* Section 3: Photos & Video */}
               <div className="space-y-5">
                 <h2 className="font-display text-lg font-bold text-foreground border-b border-border pb-2">
-                  📸 Photos & Proof
+                  📸 Photos & Video
                 </h2>
-
-                <div className="space-y-3">
-                  <Label>Photos (up to {MAX_PHOTOS})</Label>
-                  <p className="text-xs text-muted-foreground">
-                    💡 Pro tip: Take clear photos of any damage — honest listings sell faster!
-                  </p>
-
-                  {/* Photo grid */}
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                    {photoPreviews.map((url, i) => (
-                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-border group">
-                        <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => removePhoto(i)}
-                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-
-                    {photos.length < MAX_PHOTOS && (
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                      >
-                        <Camera className="w-5 h-5" />
-                        <span className="text-[10px] font-medium">Add Photo</span>
-                      </button>
-                    )}
-                  </div>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handlePhotoSelect}
-                    className="hidden"
-                  />
-                </div>
+                <MediaUpload
+                  photos={photos}
+                  photoPreviews={photoPreviews}
+                  video={video}
+                  videoPreview={videoPreview}
+                  maxPhotos={MAX_PHOTOS}
+                  onPhotoSelect={handlePhotoSelect}
+                  onRemovePhoto={removePhoto}
+                  onVideoSelect={handleVideoSelect}
+                  onRemoveVideo={removeVideo}
+                />
               </div>
 
               {/* Submit */}

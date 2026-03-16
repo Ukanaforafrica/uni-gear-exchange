@@ -247,6 +247,7 @@ const Marketplace = () => {
                         <MessageCircle className="w-3.5 h-3.5" />
                         {!user ? "Sign in to Respond" : req.user_id === user.id ? "Your Request" : "I Have This"}
                       </Button>
+                      </div>
                     </div>
                   ))}
                 </div>
