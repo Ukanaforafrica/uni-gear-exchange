@@ -122,6 +122,7 @@ const RequestItem = () => {
 
     try {
       const photoUrls = photos.length > 0 ? await uploadPhotos() : [];
+      const videoUrl = await uploadVideo();
 
       const { error } = await (supabase as any).from("item_requests").insert({
         user_id: user.id,
@@ -132,6 +133,7 @@ const RequestItem = () => {
         budget_max: budgetMax ? parseInt(budgetMax) : 0,
         university: profile.university,
         photos: photoUrls,
+        video_url: videoUrl,
       } as any);
 
       setLoading(false);
