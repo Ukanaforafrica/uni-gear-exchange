@@ -139,6 +139,7 @@ const ListItem = () => {
     setLoading(true);
     try {
       const photoUrls = await uploadPhotos();
+      const videoUrl = await uploadVideo();
 
       const { error } = await (supabase as any).from("items").insert({
         user_id: user.id,
@@ -152,6 +153,7 @@ const ListItem = () => {
         description,
         university: profile.university,
         photos: photoUrls,
+        video_url: videoUrl,
       } as any);
 
       if (error) throw error;
