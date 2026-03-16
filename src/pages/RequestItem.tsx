@@ -11,7 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ITEM_CATEGORIES } from "@/lib/types";
-import { Search, Send, ImagePlus, X } from "lucide-react";
+import { Search, Send } from "lucide-react";
+import MediaUpload from "@/components/MediaUpload";
 
 const MAX_PHOTOS = 3;
 
