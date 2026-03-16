@@ -46,6 +46,7 @@ export type Database = {
           university: string
           updated_at: string
           user_id: string
+          video_url: string
         }
         Insert: {
           budget_max?: number
@@ -60,6 +61,7 @@ export type Database = {
           university: string
           updated_at?: string
           user_id: string
+          video_url?: string
         }
         Update: {
           budget_max?: number
@@ -74,6 +76,7 @@ export type Database = {
           university?: string
           updated_at?: string
           user_id?: string
+          video_url?: string
         }
         Relationships: []
       }

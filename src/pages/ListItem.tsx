@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ITEM_CATEGORIES, CONDITION_RATINGS, USAGE_DURATIONS } from "@/lib/types";
-import { Camera, X, Upload, ShoppingBag, AlertTriangle, Clock } from "lucide-react";
+import { Upload, ShoppingBag, AlertTriangle, Clock } from "lucide-react";
+import MediaUpload from "@/components/MediaUpload";
 
 const MAX_PHOTOS = 5;
 
@@ -20,7 +21,7 @@ const ListItem = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // fileInputRef removed - handled by MediaUpload
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
@@ -32,6 +33,8 @@ const ListItem = () => {
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   if (!user || !profile) {
@@ -62,22 +65,36 @@ const ListItem = () => {
     const files = Array.from(e.target.files || []);
     const remaining = MAX_PHOTOS - photos.length;
     const selected = files.slice(0, remaining);
-
     if (files.length > remaining) {
       toast({ title: `Maximum ${MAX_PHOTOS} photos allowed`, variant: "destructive" });
     }
-
     const newPreviews = selected.map((file) => URL.createObjectURL(file));
     setPhotos((prev) => [...prev, ...selected]);
     setPhotoPreviews((prev) => [...prev, ...newPreviews]);
-
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const removePhoto = (index: number) => {
     URL.revokeObjectURL(photoPreviews[index]);
     setPhotos((prev) => prev.filter((_, i) => i !== index));
     setPhotoPreviews((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) {
+      toast({ title: "Video must be under 50MB", variant: "destructive" });
+      return;
+    }
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(file);
+    setVideoPreview(URL.createObjectURL(file));
+  };
+
+  const removeVideo = () => {
+    if (videoPreview) URL.revokeObjectURL(videoPreview);
+    setVideo(null);
+    setVideoPreview(null);
   };
 
   const uploadPhotos = async (): Promise<string[]> => {
@@ -91,6 +108,16 @@ const ListItem = () => {
       urls.push(data.publicUrl);
     }
     return urls;
+  };
+
+  const uploadVideo = async (): Promise<string> => {
+    if (!video) return "";
+    const ext = video.name.split(".").pop();
+    const path = `${user.id}/${crypto.randomUUID()}.${ext}`;
+    const { error } = await supabase.storage.from("item-photos").upload(path, video);
+    if (error) throw error;
+    const { data } = supabase.storage.from("item-photos").getPublicUrl(path);
+    return data.publicUrl;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,6 +139,7 @@ const ListItem = () => {
     setLoading(true);
     try {
       const photoUrls = await uploadPhotos();
+      const videoUrl = await uploadVideo();
 
       const { error } = await (supabase as any).from("items").insert({
         user_id: user.id,
@@ -125,6 +153,7 @@ const ListItem = () => {
         description,
         university: profile.university,
         photos: photoUrls,
+        video_url: videoUrl,
       } as any);
 
       if (error) throw error;
@@ -295,54 +324,22 @@ const ListItem = () => {
                 </div>
               </div>
 
-              {/* Section 3: Photos */}
+              {/* Section 3: Photos & Video */}
               <div className="space-y-5">
                 <h2 className="font-display text-lg font-bold text-foreground border-b border-border pb-2">
-                  📸 Photos & Proof
+                  📸 Photos & Video
                 </h2>
-
-                <div className="space-y-3">
-                  <Label>Photos (up to {MAX_PHOTOS})</Label>
-                  <p className="text-xs text-muted-foreground">
-                    💡 Pro tip: Take clear photos of any damage — honest listings sell faster!
-                  </p>
-
-                  {/* Photo grid */}
-                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-                    {photoPreviews.map((url, i) => (
-                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-border group">
-                        <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => removePhoto(i)}
-                          className="absolute top-1 right-1 bg-destructive text-destructive-foreground rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-
-                    {photos.length < MAX_PHOTOS && (
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary/50 flex flex-col items-center justify-center gap-1 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                      >
-                        <Camera className="w-5 h-5" />
-                        <span className="text-[10px] font-medium">Add Photo</span>
-                      </button>
-                    )}
-                  </div>
-
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handlePhotoSelect}
-                    className="hidden"
-                  />
-                </div>
+                <MediaUpload
+                  photos={photos}
+                  photoPreviews={photoPreviews}
+                  video={video}
+                  videoPreview={videoPreview}
+                  maxPhotos={MAX_PHOTOS}
+                  onPhotoSelect={handlePhotoSelect}
+                  onRemovePhoto={removePhoto}
+                  onVideoSelect={handleVideoSelect}
+                  onRemoveVideo={removeVideo}
+                />
               </div>
 
               {/* Submit */}
