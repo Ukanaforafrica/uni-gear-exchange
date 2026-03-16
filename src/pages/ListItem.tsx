@@ -21,7 +21,7 @@ const ListItem = () => {
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // fileInputRef removed - handled by MediaUpload
 
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
