@@ -12,7 +12,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { ITEM_CATEGORIES, CONDITION_RATINGS, USAGE_DURATIONS } from "@/lib/types";
-import { Camera, X, Upload, ShoppingBag, AlertTriangle, Clock } from "lucide-react";
+import { Upload, ShoppingBag, AlertTriangle, Clock } from "lucide-react";
+import MediaUpload from "@/components/MediaUpload";
 
 const MAX_PHOTOS = 5;
 
