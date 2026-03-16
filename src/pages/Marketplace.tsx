@@ -199,7 +199,18 @@ const Marketplace = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {requests.map((req) => (
-                    <div key={req.id} className="bg-card rounded-2xl p-6 shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1">
+                    <div key={req.id} className="bg-card rounded-2xl shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                      {/* Media preview for requests */}
+                      {((req as any).photos?.length > 0 || (req as any).video_url) && (
+                        <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                          <MediaCarousel
+                            photos={(req as any).photos || []}
+                            videoUrl={(req as any).video_url}
+                            title={req.title}
+                          />
+                        </div>
+                      )}
+                      <div className="p-6">
                       <div className="flex items-start justify-between mb-3">
                         <Badge variant="secondary" className="text-xs">
                           <Tag className="w-3 h-3 mr-1" />
