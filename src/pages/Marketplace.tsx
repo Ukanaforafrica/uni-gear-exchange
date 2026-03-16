@@ -131,19 +131,17 @@ const Marketplace = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {items.map((item) => (
                     <div key={item.id} className="bg-card rounded-2xl shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
-                      <div className="aspect-[4/3] bg-muted relative">
-                        {item.photos.length > 0 ? (
-                          <img src={item.photos[0]} alt={item.title} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                            <Camera className="w-8 h-8" />
-                          </div>
-                        )}
-                        <div className="absolute top-2 left-2 flex gap-1.5">
+                      <div className="aspect-[4/3] bg-muted relative overflow-hidden">
+                        <MediaCarousel
+                          photos={item.photos}
+                          videoUrl={item.video_url}
+                          title={item.title}
+                        />
+                        <div className="absolute top-2 left-2 flex gap-1.5 z-10">
                           <Badge variant="secondary" className="text-xs">{item.category}</Badge>
                           <Badge className="text-xs bg-background/80 text-foreground backdrop-blur-sm">{item.condition}</Badge>
                         </div>
-                        <div className="absolute top-2 right-2">
+                        <div className="absolute top-2 right-2 z-10">
                           <Badge variant="outline" className="text-xs bg-background/80 backdrop-blur-sm border-none flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {daysLeft(item.expires_at)}d left
