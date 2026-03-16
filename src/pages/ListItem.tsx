@@ -33,6 +33,8 @@ const ListItem = () => {
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const [video, setVideo] = useState<File | null>(null);
+  const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   if (!user || !profile) {
